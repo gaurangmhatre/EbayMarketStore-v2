@@ -2,9 +2,6 @@ var mysql = require('./mysql');
 var bcrypt = require('./bCrypt.js');
 var winston = require('winston');
 
-
-var MongoClient = require('mongodb').MongoClient;
-
 var mongo = require('./mongo');
 var mongoURL = "mongodb://localhost:27017/ebay";
 
@@ -53,10 +50,11 @@ exports.checklogin= function(req,res) {
 	console.log("email :: " + email);
 
 	if(email != '') {
-		var checkLoginQuery = "select UserId,Password from user where EmailId = '" + email + "';";
+		/*var checkLoginQuery = "select UserId,Password from user where EmailId = '" + email + "';";
 		logger.log('info', 'select UserId,Password from user where EmailId = '+email);
-		console.log("Query:: " + checkLoginQuery);
+		console.log("Query:: " + checkLoginQuery);*/
 
+		/*
 		mysql.fetchData(function(err,results) {
 			if(err) {
 				throw err;
@@ -97,7 +95,84 @@ exports.checklogin= function(req,res) {
 					res.send(json_responses);
 				}
 			}
-		}, checkLoginQuery);
+		}, checkLoginQuery);*/
+
+		mongo.connect(mongoURL, function(){
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('users');
+			coll.findOne({EmailId: email}, function(err, results){
+				if(err) {
+					throw err;
+					logger.log('error','Error of user :'+email+ ' Error: '+err);
+				}
+				else {
+
+					if(results!=undefined) {
+						//if (bcrypt.compareSync(password, results[0].Password)) {
+						console.log("compare"+ password + "=="+  results.Password);
+						if (password == results.Password) {
+							console.log("Successful Login");
+							logger.log('info', 'Successful Login for = ' + email + ' userId: ' + results.UserId);
+							console.log("UserId :  " + results.UserId);
+							//Assigning the session
+							req.session.email = email;
+							req.session.userid = results.UserId;
+
+							logger.log('info', "Session Initialized with email : " + req.session.email);
+							console.log("Session Initialized with email : " + req.session.email);
+
+							json_responses = {"statusCode": 200};
+							res.send(json_responses);
+						}
+
+						else {
+							logger.log('error', "Invalid password for email Id: " + email);
+							console.log("Invalid Login");
+							json_responses = {"statusCode": 401};
+							res.send(json_responses);
+						}
+					}
+					else{
+						logger.log('error', "Invalid Login for email Id: "+email +' user is not registered.');
+						json_responses = {"statusCode": 401};
+						console.log(json_responses);
+						res.send(json_responses);
+					}
+				}
+
+			});
+		});
+
+	}
+};
+
+exports.checksignup = function(req,res){ //check if email ID is valid or not
+	console.log("In check signup .");
+
+	//request parameters
+	var email = req.param("email");
+
+	if(email!='') {
+		//check if email already exists
+
+		mongo.connect(mongoURL, function(){
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('users');
+			coll.findOne({EmailId: email}, function(err, user){
+				if (user) {
+					console.log("Email exists!");
+					logger.log('error', "Email exists for id: "+ email);
+					json_responses = {"statusCode" : 200};
+
+				} else {
+					console.log("Email Doesn't exists");
+					logger.log('info', "New mail for id: "+ email);
+					json_responses = {"statusCode" : 401}; //email not found.
+				}
+
+				res.send(json_responses);
+			});
+		});
 	}
 };
 
@@ -109,7 +184,7 @@ exports.afterSignup = function(req,res){// load new user data in database
 	var email = req.param("email");
 	var password = req.param("password");
 	var contact = req.param("contact");//not added in database
-	var location = req.param("location");
+	var Address = req.param("location");
 	var creditCardNumber = req.param("creditCardNumber");
 	var dateOfBirth = req.param("dateOfBirth");
 	
@@ -118,16 +193,18 @@ exports.afterSignup = function(req,res){// load new user data in database
 	console.log("email :: " + email);
 	console.log("password :: " + password);
 	console.log("contact :: " + contact);
-	console.log("location : " + location);
+	console.log("Address : " + Address);
 	console.log("creditCardNumber : " + creditCardNumber);
 	console.log("dateOfBirth :: " +dateOfBirth);
-
+/*
 	var hash = bcrypt.hashSync(password);
 	logger.log('info', "SignUp for new user: Firstname :: " + firstname+ " Lastname :: " + lastname + " email :: " + email+ " password :: " + hash +" contact :: " + contact +" location : " + location+" dateOfBirth :: " +dateOfBirth+" creditCardNumber : " + creditCardNumber);
 
 	var query = "INSERT INTO user (FirstName, LastName, EmailId, Password, Address, CreditCardNumber,DateOfBirth) VALUES ('" + firstname + "','" + lastname + "','" + email + "','" + hash + "','" + location + "','" + creditCardNumber + "','"+dateOfBirth+"')";
 	console.log("Query:: " + query);
 	logger.log('info', "Query:: " + query);
+*/
+/*
 
 
 	mysql.storeData(query, function(err, result){
@@ -143,60 +220,39 @@ exports.afterSignup = function(req,res){// load new user data in database
 			logger.log('info', "Invalid Sign up for: "+ email);
 			res.send("false");
 		}
-	});	
-};
+	});
+*/
 
-exports.checksignup = function(req,res){ //check if email ID is valid or not
-	console.log("In check signup .");
-	
-	//request parameters
-	var email = req.param("email");
+	mongo.connect(mongoURL, function(){
+		console.log('Connected to mongo at: ' + mongoURL);
+		var coll = mongo.collection('users');
+		coll.insert({FirstName:firstname
+						,LastName:lastname
+						,EmailId: email
+						,Password:password
+						,Contact:contact
+						,Address: Address
+						,CreditCardDetails: creditCardNumber
+						,dateOfBirth:dateOfBirth
+			},function(err, user){
+			if (!err) {
+				console.log('Valid SignUp!');
+				logger.log('info', "Valid Sign up for: "+ email);
+				res.send("true");
 
-	if(email!='') {
-		//check if email already exists
-		var checkEmailQuery =  "select EmailId from user where EmailId = '" + email + "'";
-		console.log("Query is :: " + checkEmailQuery);
-		logger.log('info', "Query:: " + checkEmailQuery);
-
-/*		mysql.fetchData(function(err,results) {
-			if(err) {
-				throw err;
-				logger.log('error', err);
-
+			} else {
+				console.log('Invalid SingUp!');
+				logger.log('info', "Invalid Sign up for: "+ email);
+				res.send("false");
 			}
-			else {
-				if(results. length > 0) {
-					console.log("Email exists!");
-					logger.log('error', "Email exists for id: "+ email);
-						res.send("true");
-				}
-				else {
-					console.log("Email Doesn't exists");
-					logger.log('info', "New mail for id: "+ email);
-					res.send("false");
-				}
-			}
-		}, checkEmailQuery);*/
 
-
-		MongoClient.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('login');
-			coll.findOne({EmailId: email}, function(err, user){
-				if (user) {
-					console.log("Email exists!");
-					logger.log('error', "Email exists for id: "+ email);
-					res.send("true");
-				} else {
-					console.log("Email Doesn't exists");
-					logger.log('info', "New mail for id: "+ email);
-					res.send("false");
-				}
-			});
+			res.send(json_responses);
 		});
+	});
 
-	}
 };
+
+
 
 function getAllAuctionResults(){
 	console.log("In GetAllAuction method.");

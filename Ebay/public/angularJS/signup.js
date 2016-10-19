@@ -19,24 +19,20 @@ signup.controller('signup', function($scope, $filter, $http) {
 			data : {
 				"email" : $scope.email
 			}
-		}).success(function(emailExist,data) {
+		}).success(function(data) {
 			
 			console.log("data :: " + data);
 			//checking the response data for statusCode
 			if (data.statusCode == 401) {
-				$scope.invalid_login = false;
-				$scope.unexpected_error = true;
-			}
-			else if(emailExist == "true") {
-				console.log("EmailExist(true) :: " + emailExist);
-				$scope.emailExists = "true";
-			} 
-			else if(emailExist == "false") {
-				console.log("EmailExist(false) :: " + emailExist);
+				console.log("EmailExist(false)");
 				$scope.emailExists = "";
 				console.log("Before doSignUp Calling");
 				doSignUp();
 				console.log("After doSignUp Calling");
+			}
+			else{
+				$scope.invalid_login = false;
+				$scope.unexpected_error = true;
 			}
 		}).error(function(error) {
 			$scope.unexpected_error = false;

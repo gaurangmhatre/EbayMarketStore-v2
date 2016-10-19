@@ -1,9 +1,8 @@
 var mysql = require('./mysql');
 var winston = require('winston');
 
-//for connection pool
-var mysqlConnetionPoolTest = require('./mysqlForConnectionPool');
-
+var mongo = require('./mongo');
+var mongoURL = "mongodb://localhost:27017/ebay";
 
 var logger = new (winston.Logger)({
 	transports: [
@@ -17,7 +16,7 @@ exports.accountdetails = function(req,res){
 	//res.render('userProfile',{validationMessage:'Empty Message'});
 
 	//Checks before redirecting whether the session is valid
-	if(req.session.userid)
+	if(req.session.email)
 	{
 		//Set these headers to notify the browser not to maintain any cache for the page being loaded
 		res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
@@ -36,45 +35,36 @@ exports.getUserAccountDetails = function(req,res){
 	
 	console.log("userId: "+req.session.userid);
 	
-	var userId = req.session.userid;
+	var email = req.session.email;
 	
-	if(userId != undefined ) {
-		var getUserAccountDetailsQuery = "select UserId,FirstName,LastName,EmailId,Password,Address,CreditCardNumber,DateOfBirth,LastLoggedIn from user where UserId= "+ userId+";";
-		console.log("Query :: " + getUserAccountDetailsQuery);
-		logger.log('info','Query:: ' + getUserAccountDetailsQuery);
-		mysql.fetchData(function(err,results) {
-			if(err) {
-				throw err;
-				logger.log('error',err);
-			}
-			else {
-				if(results.length > 0) {
-						console.log("Successful got the user data");
-						console.log("UserId :  " + userId);
-						logger.log('info','Successful got the user data  for userId' + userId);
+	if(email != undefined ) {
+		mongo.connect(mongoURL, function(){
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('users');
+			coll.findOne({EmailId: email}, function(err, results){
+				if (results) {
+					console.log("Successful got the user data");
+					console.log("Email :  " + email);
+					logger.log('info','Successful got the user data  for email:' + email);
 
-						json_responses = {"UserId" : results[0].UserId
-											,"FirstName": results[0].FirstName
-											,"LastName": results[0].LastName
-											,"EmailId":results[0].EmailId
-											,"Address":results[0].Address
-											,"CreditCardNumber":results[0].CreditCardNumber
-											,"DateOfBirth":results[0].DateOfBirth
-											,"LastLoggedIn":results[0].LastLoggedIn
-											};
-						}
-				else{
-						res.send(json_responses);
-						console.log('No data retrieved for userId' + userId);
-						logger.log('info','No data retrieved for userId' + userId);
-
-						json_responses = {"statusCode" : 401};
+					json_responses = {"FirstName": results.FirstName
+						,"LastName": results.LastName
+						,"EmailId":results.EmailId
+						,"Address":results.Address
+						,"CreditCardNumber":results.CreditCardDetails
+						,"DateOfBirth":results.dateOfBirth
+						//,"LastLoggedIn":results.LastLoggedIn
+					};
 				}
-				res.send(json_responses);
-			}	
-			
-		}, getUserAccountDetailsQuery);
+				else {
+					console.log('No data retrieved for email: ' + email);
+					logger.log('info','No data retrieved for email' + email);
+					json_responses = {"statusCode" : 401};
+				}
 
+				res.send(json_responses);
+			});
+		});
 	}
 	else {
 		var json_responses = {"statusCode": 401};

@@ -73,8 +73,8 @@ login.controller('login', function($scope, $window ,$http) {
 				//Redirecting to HomePage
 				console.log("Redirecting to HomePage");
 				
-				window.location.assign("/products");
-				//window.location.assign("/userProfile");
+				//window.location.assign("/products");
+				window.location.assign("/userProfile");
 			}
 				//Making a get call to the '/redirectToHomepage' API
 				 

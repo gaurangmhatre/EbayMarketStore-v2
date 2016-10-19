@@ -24,7 +24,7 @@ describe('http tests', function(){
     it('Check Email Id exists', function(done) {
         request.post(
             'http://localhost:3000/checksignup',
-            { form: { email: 'gaurang@gmail.com'} },
+            { form: { email: 'gaurangmhatre@gmail.com'} },
             function (error, response, body) {
                 assert.equal(200, response.statusCode);
                 done();

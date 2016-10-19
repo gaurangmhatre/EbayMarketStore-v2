@@ -83,10 +83,6 @@ userProfile.controller('cartController', function($scope,$http) {
 			$scope.invalid_login = true;
 			$window.alert("unexpected_error");
 		});
-		
-		
-		
-		
 	}
 
 	$scope.removeItemFromTheCart = function(itemId) {
