@@ -1,7 +1,7 @@
 var mysql = require('./mysql');
 var winston = require('winston');
 
-var mongo = require('./mongo');
+var mongo = require('./mongo.js');
 var mongoURL = "mongodb://localhost:27017/ebay";
 
 var logger = new (winston.Logger)({
@@ -16,7 +16,7 @@ exports.accountdetails = function(req,res){
 	//res.render('userProfile',{validationMessage:'Empty Message'});
 
 	//Checks before redirecting whether the session is valid
-	if(req.session.email)
+	if(req.session.userid)
 	{
 		//Set these headers to notify the browser not to maintain any cache for the page being loaded
 		res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
@@ -35,7 +35,7 @@ exports.getUserAccountDetails = function(req,res){
 	
 	console.log("userId: "+req.session.userid);
 	
-	var email = req.session.email;
+	var email = req.session.userid;
 	
 	if(email != undefined ) {
 		mongo.connect(mongoURL, function(){

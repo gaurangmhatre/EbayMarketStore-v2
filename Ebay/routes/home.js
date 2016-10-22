@@ -2,7 +2,12 @@ var mysql = require('./mysql');
 var bcrypt = require('./bCrypt.js');
 var winston = require('winston');
 
-var mongo = require('./mongo');
+var mongo = require('./mongo.js');
+/*
+
+var passport = require('passport');
+//require('./routes/passport')(passport);
+ */
 var mongoURL = "mongodb://localhost:27017/ebay";
 
 
@@ -16,7 +21,7 @@ var logger = new (winston.Logger)({
 //Redirects to the homepage
 exports.redirectToHome = function(req,res) {
 	//Checks before redirecting whether the session is valid
-	if(req.session.userid)
+	/*if(req.session.userid)
 	{
 		//Set these headers to notify the browser not to maintain any cache for the page being loaded
 		res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
@@ -24,9 +29,9 @@ exports.redirectToHome = function(req,res) {
 		res.render('products',{validationMessage:'Empty Messgage'});
 	}
 	else
-	{
+	{*/
 		res.redirect('/signin');
-	}
+	/*}*/
 };
 
 exports.signup=function (req,res) {
@@ -39,7 +44,7 @@ exports.signin = function(req,res){
 	res.render('signin',{validationMessage:'Empty Message'});
 };
 
-exports.checklogin= function(req,res) {
+/*exports.checklogin= function(req,res) {
 
 	console.log("in checklogin");
 
@@ -50,101 +55,33 @@ exports.checklogin= function(req,res) {
 	console.log("email :: " + email);
 
 	if(email != '') {
-		/*var checkLoginQuery = "select UserId,Password from user where EmailId = '" + email + "';";
-		logger.log('info', 'select UserId,Password from user where EmailId = '+email);
-		console.log("Query:: " + checkLoginQuery);*/
 
-		/*
-		mysql.fetchData(function(err,results) {
+			passport.authenticate('login', function(err, user) {
 			if(err) {
-				throw err;
-				logger.log('error','Error of user :'+email+ ' Error: '+err);
+				console.log(err);
 			}
-			else {
-				if(results.length >0) {
-					if (bcrypt.compareSync(password, results[0].Password)) {
 
-						console.log("Successful Login");
-						logger.log('info', 'Successful Login for = ' + email + ' userId: ' + results[0].UserId);
-						console.log("UserId :  " + results[0].UserId);
-						//Assigning the session
-						req.session.email = email;
-						req.session.userid = results[0].UserId;
-
-						logger.log('info', "Session Initialized with email : " + req.session.email);
-						console.log("Session Initialized with email : " + req.session.email);
-
-						logger.log('info', "userid :: " + req.session.userid);
-						console.log("userid :: " + req.session.userid);
-
-						json_responses = {"statusCode": 200};
-						res.send(json_responses);
-					}
-
-					else {
-						logger.log('error', "Invalid password for email Id: " + email);
-						console.log("Invalid Login");
-						json_responses = {"statusCode": 401};
-						res.send(json_responses);
-					}
-				}
-				else{
-					logger.log('error', "Invalid Login for email Id: "+email +' user is not registered.');
-					json_responses = {"statusCode": 401};
-					console.log(json_responses);
-					res.send(json_responses);
-				}
+			if(!user) {
+				//return res.redirect('/');
+				var json_responses = {"statusCode": 401};
+				res.send(json_responses);
 			}
-		}, checkLoginQuery);*/
 
-		mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
-			coll.findOne({EmailId: email}, function(err, results){
+			req.logIn(user, {session:false}, function(err) {
 				if(err) {
-					throw err;
-					logger.log('error','Error of user :'+email+ ' Error: '+err);
-				}
-				else {
-
-					if(results!=undefined) {
-						//if (bcrypt.compareSync(password, results[0].Password)) {
-						console.log("compare"+ password + "=="+  results.Password);
-						if (password == results.Password) {
-							console.log("Successful Login");
-							logger.log('info', 'Successful Login for = ' + email + ' userId: ' + results.UserId);
-							console.log("UserId :  " + results.UserId);
-							//Assigning the session
-							req.session.email = email;
-							req.session.userid = results.UserId;
-
-							logger.log('info', "Session Initialized with email : " + req.session.email);
-							console.log("Session Initialized with email : " + req.session.email);
-
-							json_responses = {"statusCode": 200};
-							res.send(json_responses);
-						}
-
-						else {
-							logger.log('error', "Invalid password for email Id: " + email);
-							console.log("Invalid Login");
-							json_responses = {"statusCode": 401};
-							res.send(json_responses);
-						}
-					}
-					else{
-						logger.log('error', "Invalid Login for email Id: "+email +' user is not registered.');
-						json_responses = {"statusCode": 401};
-						console.log(json_responses);
-						res.send(json_responses);
-					}
+					console.log(err);
 				}
 
+				req.session.userid = user.EmailId;
+				console.log("session initilized")
+				//return res.render('successLogin', {emailId:user.EmailId});
+
+				var json_responses = {"statusCode": 200};
+				res.send(json_responses);
+			})
 			});
-		});
-
 	}
-};
+};*/
 
 exports.checksignup = function(req,res){ //check if email ID is valid or not
 	console.log("In check signup .");
@@ -233,7 +170,7 @@ exports.afterSignup = function(req,res){// load new user data in database
 						,Contact:contact
 						,Address: Address
 						,CreditCardDetails: creditCardNumber
-						,dateOfBirth:dateOfBirth
+						,DateOfBirth:dateOfBirth
 			},function(err, user){
 			if (!err) {
 				console.log('Valid SignUp!');
@@ -343,6 +280,8 @@ exports.signout = function(req,res){
 
 function addLastLogin(userId) {
 
+	//failing because of userID is EmailId now
+	/*
 	var addItemToSoldTableQuery = "UPDATE user	SET LastLoggedIn = NOW() WHERE UserId = "+userId+";";
 	console.log("Query:: " + addItemToSoldTableQuery);
 	logger.log('info',"Query:: " + addItemToSoldTableQuery);
@@ -359,4 +298,7 @@ function addLastLogin(userId) {
 			throw err;
 		}
 	});
+*/
+
+
 }

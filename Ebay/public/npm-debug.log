@@ -1,0 +1,80 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'passpost-local',
+1 verbose cli   '--save' ]
+2 info using npm@2.15.5
+3 info using node@v4.4.5
+4 verbose install initial load of C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\package.json
+5 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\angular\package.json
+6 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\chai\package.json
+7 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\client-sessions\package.json
+8 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\connect-mongo\package.json
+9 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\ejs\package.json
+10 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\express\package.json
+11 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\express-session\package.json
+12 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\mocha\package.json
+13 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\mongodb\package.json
+14 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\mysql\package.json
+15 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\passport\package.json
+16 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\request\package.json
+17 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\should\package.json
+18 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\supertest\package.json
+19 verbose installManyTop reading scoped package data from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\node_modules\winston\package.json
+20 info package.json client-sessions@0.7.0 No license field.
+21 info package.json mongodb@2.2.10 No README data
+22 info package.json passport@0.3.2 No README data
+23 info package.json express@3.2.6 No license field.
+24 verbose readDependencies loading dependencies from C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\package.json
+25 silly cache add args [ 'passpost-local', null ]
+26 verbose cache add spec passpost-local
+27 silly cache add parsed spec Result {
+27 silly cache add   raw: 'passpost-local',
+27 silly cache add   scope: null,
+27 silly cache add   name: 'passpost-local',
+27 silly cache add   rawSpec: '',
+27 silly cache add   spec: 'latest',
+27 silly cache add   type: 'tag' }
+28 silly addNamed passpost-local@latest
+29 verbose addNamed "latest" is being treated as a dist-tag for passpost-local
+30 info addNameTag [ 'passpost-local', 'latest' ]
+31 silly mapToRegistry name passpost-local
+32 silly mapToRegistry using default registry
+33 silly mapToRegistry registry https://registry.npmjs.org/
+34 silly mapToRegistry data Result {
+34 silly mapToRegistry   raw: 'passpost-local',
+34 silly mapToRegistry   scope: null,
+34 silly mapToRegistry   name: 'passpost-local',
+34 silly mapToRegistry   rawSpec: '',
+34 silly mapToRegistry   spec: 'latest',
+34 silly mapToRegistry   type: 'tag' }
+35 silly mapToRegistry uri https://registry.npmjs.org/passpost-local
+36 verbose addNameTag registry:https://registry.npmjs.org/passpost-local not in flight; fetching
+37 verbose request uri https://registry.npmjs.org/passpost-local
+38 verbose request no auth needed
+39 info attempt registry request try #1 at 10:44:57 AM
+40 verbose request id 857748fa1f7a43da
+41 http request GET https://registry.npmjs.org/passpost-local
+42 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND registry.npmjs.org registry.npmjs.org:443
+43 info attempt registry request try #2 at 10:45:19 AM
+44 http request GET https://registry.npmjs.org/passpost-local
+45 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND registry.npmjs.org registry.npmjs.org:443
+46 info attempt registry request try #3 at 10:46:31 AM
+47 http request GET https://registry.npmjs.org/passpost-local
+48 verbose stack Error: getaddrinfo EAI_AGAIN registry.npmjs.org:443
+48 verbose stack     at Object.exports._errnoException (util.js:870:11)
+48 verbose stack     at errnoException (dns.js:32:15)
+48 verbose stack     at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:78:26)
+49 verbose cwd C:\Projects\GitHub\GitHub\CMPE273\lab2\lab2_ebay\Ebay\public
+50 error Windows_NT 6.1.7601
+51 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "passpost-local" "--save"
+52 error node v4.4.5
+53 error npm  v2.15.5
+54 error code EAI_AGAIN
+55 error errno EAI_AGAIN
+56 error syscall getaddrinfo
+57 error getaddrinfo EAI_AGAIN registry.npmjs.org:443
+58 error If you need help, you may report this error at:
+58 error     <https://github.com/npm/npm/issues>
+59 verbose exit [ 1, true ]

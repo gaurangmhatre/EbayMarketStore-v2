@@ -48,7 +48,7 @@ login.controller('login', function($scope, $window ,$http) {
 			method : "POST",
 			url : '/checklogin',
 			data : {
-				"email" : $scope.email,
+				"username" : $scope.email,
 				"password" : $scope.password
 			}
 		}).success(function(data) {
