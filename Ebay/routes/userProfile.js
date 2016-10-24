@@ -52,8 +52,8 @@ exports.getUserAccountDetails = function(req,res){
 						,"EmailId":results.EmailId
 						,"Address":results.Address
 						,"CreditCardNumber":results.CreditCardDetails
-						,"DateOfBirth":results.dateOfBirth
-						//,"LastLoggedIn":results.LastLoggedIn
+						,"DateOfBirth":results.DateOfBirth
+						,"LastLoggedIn":results.LastLoggedIn
 					};
 				}
 				else {

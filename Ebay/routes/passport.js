@@ -3,7 +3,10 @@
  */
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
+
 var mongo = require('./mongo');
+//var MongoClient = require('mongodb').MongoClient;
+
 var loginDatabase = "mongodb://localhost:27017/ebay";
 
 module.exports = function(passport) {

@@ -27,7 +27,6 @@ var app = express();
 
 // all environments
 
-
 //configure the sessions with our application
 app.use(session({
 	  
@@ -104,9 +103,8 @@ app.post('/checklogin', function(req, res,next) {
 				return next(err);
 			}
 
-			req.session.userid = user.EmailId;
-			console.log("session initilized")
-			//return res.render('successLogin', {user:userid});
+			req.session.userid = user.EmailId; //userid  = EmailId
+			console.log("session initilized");
 			//change to json responce
 			var json_responses = {"statusCode": 200};
 			res.send(json_responses);

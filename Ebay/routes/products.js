@@ -1,7 +1,8 @@
 var mysql = require('./mysql');
 var winston = require('winston');
 
-
+var mongo = require('./mongo.js');
+var mongoURL = "mongodb://localhost:27017/ebay";
 
 var logger = new (winston.Logger)({
 	transports: [
@@ -14,27 +15,27 @@ exports.getProductsPage = function(req,res){
 	//res.render('products',{validationMessage:'Empty Messgage'});
 
 	//Checks before redirecting whether the session is valid
-	if(req.session.userid)
-	{
+	//if(req.session.userid)
+	//{
 		//Set these headers to notify the browser not to maintain any cache for the page being loaded
-		res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+		//res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 		//res.render("homepage",{userid:req.session.userid});
 		res.render('products',{validationMessage:'Empty Messgage'});
-	}
+	/*}
 	else
 	{
 		res.redirect('/signin');
-	}
+	}*/
 
 };
 
 exports.getAllProducts = function(req,res){
 	console.log("In getAllProducts.");
 		
-		var getAllProductQuery = "select ItemId, ItemName,ItemDescription,ItemTypeId,SellerId,Price,Qty,DateAdded,IsBidItem, sold from item where IsBidItem=0 and Qty>0";
-		console.log("Query:: " + getAllProductQuery);
-		logger.log('info', "Query:: " + getAllProductQuery);
-		mysql.fetchData(function(err,results) {
+		//var getAllProductQuery = "select ItemId, ItemName,ItemDescription,ItemTypeId,SellerId,Price,Qty,DateAdded,IsBidItem, sold from item where IsBidItem=0 and Qty>0";
+		//console.log("Query:: " + getAllProductQuery);
+		//logger.log('info', "Query:: " + getAllProductQuery);
+		/*mysql.fetchData(function(err,results) {
 			if(err) {
 				throw err;
 				logger.log('error', err);
@@ -54,7 +55,38 @@ exports.getAllProducts = function(req,res){
 					res.send(json_responses);
 				}
 			}
-		}, getAllProductQuery );
+		}, getAllProductQuery );*/
+
+	console.log("userId: "+req.session.userid);
+
+	var email = req.session.userid;
+
+	if(email != undefined ) {
+		mongo.connect(mongoURL, function(){
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('ProductsForDirectSell');
+
+			coll.find().toArray(function(err, results){
+				if (results) {
+					console.log("Successful got the user data");
+					console.log("Email :  " + email);
+					logger.log('info','Successful got the user data  for email:' + email);
+
+					json_responses = {"statusCode" : 200, "results": results};
+				}
+				else {
+					console.log('No data retrieved for email: ' + email);
+					logger.log('info','No data retrieved for email' + email);
+					json_responses = {"statusCode" : 401};
+				}
+				res.send(json_responses);
+			});
+		});
+	}
+	else {
+		var json_responses = {"statusCode": 401};
+		res.send(json_responses);
+	}
 };
 
 exports.getAllProductsForAuction = function(req,res){
