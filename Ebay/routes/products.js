@@ -31,57 +31,12 @@ exports.getProductsPage = function(req,res){
 
 exports.getAllProducts = function(req,res){
 	console.log("In getAllProducts.");
-		
-		//var getAllProductQuery = "select ItemId, ItemName,ItemDescription,ItemTypeId,SellerId,Price,Qty,DateAdded,IsBidItem, sold from item where IsBidItem=0 and Qty>0";
-		//console.log("Query:: " + getAllProductQuery);
-		//logger.log('info', "Query:: " + getAllProductQuery);
-		/*mysql.fetchData(function(err,results) {
-			if(err) {
-				throw err;
-				logger.log('error', err);
-			}
-			else {
-				if(results.length > 0) {
-					logger.log('info', 'Results are loaded for user : '+req.session.userid);
-						json_responses = {"statusCode" : 200,
-											"results" : results};
-						
-						res.send(json_responses);
-				}
-				else {
-					console.log("No items to display");
-					logger.log('info', 'No items to display for user : '+req.session.userid);
-					json_responses = {"statusCode" : 401};
-					res.send(json_responses);
-				}
-			}
-		}, getAllProductQuery );*/
 
 	console.log("userId: "+req.session.userid);
 
 	var email = req.session.userid;
 
 	if(email != undefined ) {
-/*		mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('ProductsForDirectSell');
-
-			coll.find().toArray(function(err, results){
-				if (results) {
-					console.log("Successful got the user data");
-					console.log("Email :  " + email);
-					logger.log('info','Successful got the user data  for email:' + email);
-
-					json_responses = {"statusCode" : 200, "results": results};
-				}
-				else {
-					console.log('No data retrieved for email: ' + email);
-					logger.log('info','No data retrieved for email' + email);
-					json_responses = {"statusCode" : 401};
-				}
-				res.send(json_responses);
-			});
-		});*/
 
 		mongo.connect(mongoURL, function(){
 			console.log('Connected to mongo at: ' + mongoURL);
@@ -115,7 +70,7 @@ exports.getAllProducts = function(req,res){
 exports.getAllProductsForAuction = function(req,res){
 	console.log("In getAllProductsForAuction.");
 
-		var getAllProductForAuctionQuery = "select i.ItemId, i.ItemName,i.ItemDescription,i.ItemTypeId,i.SellerId,i.Price,i.Qty,i.DateAdded,i.AuctionEndDate,i.IsBidItem,i.sold, max(b.BidAmount) as MaxBidAmount from item as i left join bidderList as b on i.ItemId = b.ItemId  where i.IsBidItem=1 and i.AuctionEndDate > NOW() group by i.ItemId, i.ItemName,i.ItemDescription,i.ItemTypeId,i.SellerId,i.Price,i.Qty,i.DateAdded,i.AuctionEndDate,i.IsBidItem, i.sold";
+		/*var getAllProductForAuctionQuery = "select i.ItemId, i.ItemName,i.ItemDescription,i.ItemTypeId,i.SellerId,i.Price,i.Qty,i.DateAdded,i.AuctionEndDate,i.IsBidItem,i.sold, max(b.BidAmount) as MaxBidAmount from item as i left join bidderList as b on i.ItemId = b.ItemId  where i.IsBidItem=1 and i.AuctionEndDate > NOW() group by i.ItemId, i.ItemName,i.ItemDescription,i.ItemTypeId,i.SellerId,i.Price,i.Qty,i.DateAdded,i.AuctionEndDate,i.IsBidItem, i.sold";
 		console.log("Query:: " + getAllProductForAuctionQuery);
 		logger.log('info', "Query:: " + getAllProductForAuctionQuery);
 		mysql.fetchData(function(err,results) {
@@ -138,52 +93,81 @@ exports.getAllProductsForAuction = function(req,res){
 					res.send(json_responses);
 				}
 			}
-		}, getAllProductForAuctionQuery );
+		}, getAllProductForAuctionQuery );*/
+
+	console.log("userId: "+req.session.userid);
+
+	var email = req.session.userid;
+
+	if(email != undefined ) {
+
+		mongo.connect(mongoURL, function(){
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('users');
+
+			coll.find({},{"EmailId":1,"ProductsForAuction":1,"_id":0}).toArray(function(err, results){
+				if (results) {
+					console.log("Successful got the products for Auction sell.");
+					console.log("Email :  " + email);
+					logger.log('info','Successful got the user data  for email:' + email);
+
+					json_responses = {"statusCode" : 200, "results": results};
+				}
+				else {
+					console.log('No data retrieved for email: ' + email);
+					logger.log('info','No data retrieved for email' + email);
+					json_responses = {"statusCode" : 401};
+				}
+				res.send(json_responses);
+			});
+		});
+
+
+	}
+	else {
+		var json_responses = {"statusCode": 401};
+		res.send(json_responses);
+	}
+
+
 };
 
 exports.userAddToCart = function(req,res){
 	console.log("In userAddToCart method.");
 	
-	var ItemId = req.param("ItemId");
-	var Qty = 	 req.param("Qty");
+	var Product = req.param("product");
+
 	var UserId =  req.session.userid;
 	
-	console.log("Add to cart for: "+UserId+" itemId: "+ItemId+" Qty:"+Qty);
-	logger.log('info', "Add to cart for: "+UserId+" itemId: "+ItemId+" Qty:"+Qty);
+	console.log("Add to cart for: "+UserId+" itemId: "+Product.ItemName+" Qty:"+Product.Qty);
+	logger.log('info', "Add to cart for: "+UserId+" itemId: "+Product.ItemName+" Qty:"+Product.Qty);
 
 	if(UserId != undefined ) {
-		var userAddToCartQuery = "INSERT INTO usercart(`UserId`,`ItemId`,`Qty`)VALUES(" + UserId + "," + ItemId + "," + Qty + ");";
-		console.log("Query:: " + userAddToCartQuery);
-		logger.log('info', "Query:: " + userAddToCartQuery);
+		mongo.connect(mongoURL, function () {
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('users');
 
-		mysql.fetchData(function (err, results) {
-			if (err) {
-				throw err;
-				logger.log('error', "Error:: " + err);
-			}
-			else {
-				if (results.length > 0) {
-					logger.log('info', 'Items loaded in the cart of user' + UserId);
-					json_responses = {
-						"statusCode": 200,
-						"results": results
-					};
+			coll.update({"EmailId": UserId}, {$push: {"UserCart": Product}}), function (err, results) {
+				if (results) {
+					console.log("Successful got the products for Auction sell.");
+					console.log("Email :  " + UserId);
+					logger.log('info', 'Successful got the user data  for email:' + UserId);
 
-					res.send(json_responses);
+					json_responses = {"statusCode": 200, "results": results};
 				}
 				else {
-					console.log("No items to display");
-					logger.log('info', "No items to display for usrId" + UserId);
+					console.log('No data retrieved for email: ' + UserId);
+					logger.log('info', 'No data retrieved for email' + UserId);
 					json_responses = {"statusCode": 401};
-					res.send(json_responses);
 				}
+				res.send(json_responses);
 			}
-		}, userAddToCartQuery);
+		})
 	}
-	/*else {
+	else {
 		var json_responses = {"statusCode": 401};
 		res.send(json_responses);
-	}*/
+	}
 };
 
 exports.addBidOnProduct = function(req,res){

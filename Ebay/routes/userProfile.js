@@ -186,37 +186,30 @@ exports.getAllProductsInCart = function(req,res){
 	var userId = req.session.userid;
 	
 	if(userId != undefined) {
-		var getUserCartItemsQuery = "select uc.UserCartId, uc.ItemId, i.ItemName, i.ItemDescription, i.ItemTypeId ,i.Price from ebay.usercart uc join ebay.item i on uc.ItemId =  i.itemId where uc.UserId = '" + userId +"'";
-		console.log("Query:: " + getUserCartItemsQuery);
-		logger.log('info','Query:: ' + getUserCartItemsQuery);
-		mysql.fetchData(function(err,results) {
-			if(err) {
-				throw err;
-				logger.log('error',err);
+		mongo.connect(mongoURL, function(){
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('users');
 
-			}
-			else {
-				if(results.length > 0) {
-						console.log("Successful got the user cart data");
-						logger.log('info','Successful got the user cart data' + userId);
-						json_responses = results;
-						}
-				else{
-						res.send(json_responses);
-						console.log("Invalid string.");
-						logger.log('info','No items in cart' + userId);
-						json_responses = {"statusCode" : 401, "Message":  "No items in cart"};
+			coll.find({"EmailId": userId},{"EmailId":1,"UserCart":1,"_id":0}).toArray(function(err, results){
+				if (results) {
+					console.log("Successful got the products for direct sell.");
+					console.log("Email :  " + userId);
+					logger.log('info','Successful got the user data  for email:' + userId);
+
+					json_responses = {"statusCode" : 200, "results": results};
+				}
+				else {
+					console.log('No data retrieved for email: ' + userId);
+					logger.log('info','No data retrieved for email' + userId);
+					json_responses = {"statusCode" : 401};
 				}
 				res.send(json_responses);
-			}	
-			
-		}, getUserCartItemsQuery);
+			});
+		});
+
 	}
 
-    /*else {
-        var json_responses = {"statusCode": 401};
-        res.send(json_responses);
-    }*/
+
 };
 
 exports.removeItemFromCart = function(req,res){

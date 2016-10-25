@@ -25,18 +25,23 @@ userProfile.controller('cartController', function($scope,$http) {
 			console.log("data is ::");
 			console.log(data);
 			$scope.TotalCostOfCart=0
-			$scope.allProductsInCart = data;
-			
+			$scope.allProductsInCart = [];
+
+
+			angular.forEach(data.results[0].UserCart, function(product, key) {
+				$scope.allProductsInCart.push(product);
+			});
+
 			
 			for(product in $scope.allProductsInCart)
 			{
 				$scope.TotalCostOfCart = $scope.TotalCostOfCart+$scope.allProductsInCart[product].Price;				
 			}
 			
-			if($scope.TotalCostOfCart>0)
-			{
+			/*if($scope.TotalCostOfCart>0)
+			{*/
 					$scope.donotloadtemplate= false;
-			}
+			/*}*/
 			
 			//set all variables.
 				 

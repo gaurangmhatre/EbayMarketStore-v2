@@ -20,8 +20,8 @@ products.controller('products', function($scope, $filter, $http) {
 			$scope.allProducts = [];
 
 			angular.forEach(data.results, function(result, key){
-				angular.forEach(result.ProductsForDirectSell, function(products, key) {
-					$scope.allProducts.push(products);
+				angular.forEach(result.ProductsForDirectSell, function(product, key) {
+					$scope.allProducts.push(product);
 				});
 			});
 
@@ -36,21 +36,18 @@ products.controller('products', function($scope, $filter, $http) {
 			$window.alert("unexpected_error");
 		});
 		
-		$scope.AddToCart = function(ItemId) {
+		$scope.AddToCart = function(product) {
 			
-			console.log("Selected ItemId : "+ItemId);
+			console.log("Selected product : "+product.ItemName);
 			$http({
 				method : "POST",
 				url : '/userAddToCart',//change the method to get 10 items at a time.
 				data : {
-					"ItemId" : ItemId,
-					"Qty" : 1
+					"product" : product
 				}
 			}).success(function(data) {
-				console.log("inside success");
-				console.log("data is ::");
-				console.log(data);
-				
+				console.log("Item added successfully to the user cart.");
+
 				window.location.assign("/products");
 				//set all variables.
 					 

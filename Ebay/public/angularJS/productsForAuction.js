@@ -19,8 +19,20 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 			console.log("data is ::");
 			console.log(data);
 			
-			$scope.allProductsForAuction = data.results;
-			
+			$scope.allProductsForAuction = [];
+
+			$scope.allProducts = [];
+
+			angular.forEach(data.results, function(result, key){
+				angular.forEach(result.ProductsForAuction, function(product, key) {
+					$scope.allProductsForAuction.push(product);
+				});
+			});
+
+
+
+
+
 			//set all variables.
 				 
 		}).error(function(error) {
