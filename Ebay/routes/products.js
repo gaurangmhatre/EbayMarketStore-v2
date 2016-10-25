@@ -62,7 +62,7 @@ exports.getAllProducts = function(req,res){
 	var email = req.session.userid;
 
 	if(email != undefined ) {
-		mongo.connect(mongoURL, function(){
+/*		mongo.connect(mongoURL, function(){
 			console.log('Connected to mongo at: ' + mongoURL);
 			var coll = mongo.collection('ProductsForDirectSell');
 
@@ -81,7 +81,30 @@ exports.getAllProducts = function(req,res){
 				}
 				res.send(json_responses);
 			});
+		});*/
+
+		mongo.connect(mongoURL, function(){
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('users');
+
+			coll.find({},{"EmailId":1,"ProductsForDirectSell":1,"_id":0}).toArray(function(err, results){
+				if (results) {
+					console.log("Successful got the products for direct sell.");
+					console.log("Email :  " + email);
+					logger.log('info','Successful got the user data  for email:' + email);
+
+					json_responses = {"statusCode" : 200, "results": results};
+				}
+				else {
+					console.log('No data retrieved for email: ' + email);
+					logger.log('info','No data retrieved for email' + email);
+					json_responses = {"statusCode" : 401};
+				}
+				res.send(json_responses);
+			});
 		});
+
+
 	}
 	else {
 		var json_responses = {"statusCode": 401};

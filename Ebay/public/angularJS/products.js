@@ -17,7 +17,15 @@ products.controller('products', function($scope, $filter, $http) {
 			console.log("data is ::");
 			console.log(data);
 
-			$scope.allProducts = data.results;
+			$scope.allProducts = [];
+
+			angular.forEach(data.results, function(result, key){
+				angular.forEach(result.ProductsForDirectSell, function(products, key) {
+					$scope.allProducts.push(products);
+				});
+			});
+
+
 			//set all variables.
 				 
 		}).error(function(error) {
