@@ -90,13 +90,13 @@ userProfile.controller('cartController', function($scope,$http) {
 		});
 	}
 
-	$scope.removeItemFromTheCart = function(itemId) {
+	$scope.removeItemFromTheCart = function(item) {
 		
 		 $http({
 			method : "POST",
 			url : '/removeItemFromCart',
 			data : {
-				"itemId" : itemId,		
+				"item" : item,
 		}
 		}).success(function(data) {
 			console.log("inside success");

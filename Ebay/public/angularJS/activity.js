@@ -25,9 +25,9 @@ userProfile.controller('activityController', function($scope,$http) {
 			console.log(data);
 
 
-			$scope.allItemsInActivity = data
+			$scope.allItemsInActivity = data.results[0].PurchasedProducts;
 
-			if($scope.allItemsInActivity.statusCode!=401)
+			if(data.statusCode!=401)
 			{
 				$scope.disableBuyActivity= false;
 			}
@@ -55,8 +55,8 @@ userProfile.controller('activityController', function($scope,$http) {
 			console.log(data1);
 
 
-			$scope.allSoldProducts = data1;
-			if($scope.allSoldProducts.statusCode!=401)
+			$scope.allSoldProducts = data1.results[0].SoldProducts;
+			if(data1.statusCode!=401)
 			{
 				$scope.disableSellActivity= false;
 			}
@@ -85,8 +85,8 @@ userProfile.controller('activityController', function($scope,$http) {
 			console.log(data1);
 
 
-			$scope.AllUserBiddingActivity = data1;
-			if($scope.AllUserBiddingActivity.statusCode!=401)
+			$scope.AllUserBiddingActivity = data1.results[0].BidPlacedOnProducts;
+			if(data1.statusCode!=401)
 			{
 				$scope.disableBidActivity= false;
 			}
@@ -113,8 +113,8 @@ userProfile.controller('activityController', function($scope,$http) {
 			console.log(data2);
 
 
-			$scope.AllUserAuctionsWonActivity = data2;
-			if($scope.AllUserAuctionsWonActivity.statusCode!=401)
+			$scope.AllUserAuctionsWonActivity = data2.results[0].AuctionsWonOnProducts;
+			if(data2.statusCode!=401)
 			{
 				$scope.disableAuctionWonActivity= false;
 			}

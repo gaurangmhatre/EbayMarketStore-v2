@@ -138,9 +138,14 @@ exports.userAddToCart = function(req,res){
 	var Product = req.param("product");
 
 	var UserId =  req.session.userid;
-	
+
+
+
 	console.log("Add to cart for: "+UserId+" itemId: "+Product.ItemName+" Qty:"+Product.Qty);
 	logger.log('info', "Add to cart for: "+UserId+" itemId: "+Product.ItemName+" Qty:"+Product.Qty);
+
+
+	Product.Qty="1";
 
 	if(UserId != undefined ) {
 		mongo.connect(mongoURL, function () {
@@ -168,6 +173,7 @@ exports.userAddToCart = function(req,res){
 		var json_responses = {"statusCode": 401};
 		res.send(json_responses);
 	}
+
 };
 
 exports.addBidOnProduct = function(req,res){
@@ -244,8 +250,9 @@ exports.getItemType = function(req,res){
 
 exports.addProduct = function(req,res){
 	console.log("Inside addProduct.");
-	
-	var SellerId = req.session.userid;
+	var json_responses="";
+
+	var userId = req.session.userid;
 	
 	var ItemName = req.param("ItemName");
 	var ItemDescription = req.param("ItemDescription");
@@ -255,40 +262,62 @@ exports.addProduct = function(req,res){
 	var IsBidItem = req.param("IsBidItem");
 	var Sold = 0;
 
-	if(IsBidItem==1)
-	{
-		Qty=1; // Bid can only happen on one item at a time.
+	var product = {ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: new Date()};
+
+	var productForBidding = {ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: new Date(), DateAdded: $date ,AuctionEndDate:{ $add: [ "$date", 4*24*60*60000 ] }};
+
+	if(userId != undefined ) {
+		if (IsBidItem == 0) {
+			mongo.connect(mongoURL, function () {
+				console.log('Connected to mongo at: ' + mongoURL);
+				var coll = mongo.collection('users');
+
+				coll.update(
+					{ EmailId: userId },
+					{ $push: { ProductsForDirectSell: { $each: [product] } } }
+					, function (err, result) {
+						if (result) {
+							console.log("Successful Added the products for direct sell.");
+							console.log("Email :  " + userId);
+							logger.log('info', 'Successful Added the user data  for email:' + userId);
+
+							json_responses = {"statusCode": 200, "results": result};
+						}
+						else {
+							console.log('No data added for email: ' + userId);
+							logger.log('info', 'No data added for email' + userId);
+							json_responses = {"statusCode": 401};
+						}
+						res.send(json_responses);
+					});
+			});
+		}
+		else if(IsBidItem == 1) {
+			mongo.connect(mongoURL, function () {
+				console.log('Connected to mongo at: ' + mongoURL);
+				var coll = mongo.collection('users');
+
+				coll.update(
+					{ EmailId: userId },
+					{ $push: { ProductsForAuction: { $each: [productForBidding] } } }
+					, function (err, result) {
+						if (result) {
+							console.log("Successful Added the products for direct sell.");
+							console.log("Email :  " + userId);
+							logger.log('info', 'Successful Added the user data  for email:' + userId);
+
+							json_responses = {"statusCode": 200, "results": result};
+						}
+						else {
+							console.log('No data added for email: ' + userId);
+							logger.log('info', 'No data added for email' + userId);
+							json_responses = {"statusCode": 401};
+						}
+						res.send(json_responses);
+					});
+			});
+		}
+
+
 	}
-	var insertNewProductQuery = "INSERT INTO item (ItemName,ItemDescription,ItemTypeId,SellerId,Price,Qty,DateAdded,AuctionEndDate,IsBidItem,Sold) VALUES ('"+ItemName+"','"+ItemDescription+"',"+ItemTypeId+","+SellerId+","+Price+","+Qty+",NOW(),date_add(NOW(),INTERVAL 4 DAY),"+IsBidItem+","+Sold+")";
-
-	console.log("Query:: " + insertNewProductQuery);
-	logger.log('info',"Query:: " + insertNewProductQuery);
-
-	if(SellerId != undefined ){
-		mysql.fetchData(function (err, results) {
-			if (err) {
-				throw err;
-				logger.log('error', err);
-			}
-			else {
-				if (results.length > 0) {
-					console.log("Successful added the item to Items table.");
-					logger.log('info', 'Successful added the item to Items table for userId: ' + SellerId);
-					json_responses = results;
-				}
-				else {
-					res.send(json_responses);
-					console.log("Invalid string.");
-					logger.log('info', 'Zero items added for userId: ' + SellerId);
-					json_responses = {"statusCode": 401};
-				}
-				res.send(json_responses);
-			}
-
-		}, insertNewProductQuery);
-	}
-	/*else {
-		var json_responses = {"statusCode": 401};
-		res.send(json_responses);
-	}*/
 };
