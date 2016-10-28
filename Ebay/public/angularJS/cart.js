@@ -35,7 +35,7 @@ userProfile.controller('cartController', function($scope,$http) {
 			
 			for(product in $scope.allProductsInCart)
 			{
-				$scope.TotalCostOfCart = $scope.TotalCostOfCart+$scope.allProductsInCart[product].Price;				
+				$scope.TotalCostOfCart = $scope.TotalCostOfCart+parseInt($scope.allProductsInCart[product].Price);
 			}
 			
 			/*if($scope.TotalCostOfCart>0)
