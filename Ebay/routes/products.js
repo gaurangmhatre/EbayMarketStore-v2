@@ -12,21 +12,7 @@ var logger = new (winston.Logger)({
 });
 
 exports.getProductsPage = function(req,res){
-	//res.render('products',{validationMessage:'Empty Messgage'});
-
-	//Checks before redirecting whether the session is valid
-	//if(req.session.userid)
-	//{
-		//Set these headers to notify the browser not to maintain any cache for the page being loaded
-		//res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-		//res.render("homepage",{userid:req.session.userid});
 		res.render('products',{validationMessage:'Empty Messgage'});
-	/*}
-	else
-	{
-		res.redirect('/signin');
-	}*/
-
 };
 
 exports.getAllProducts = function(req,res){
@@ -40,9 +26,9 @@ exports.getAllProducts = function(req,res){
 
 		mongo.connect(mongoURL, function(){
 			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
+			var coll = mongo.collection('ProductsForDirectSell');
 
-			coll.find({},{"EmailId":1,"ProductsForDirectSell":1,"_id":0}).toArray(function(err, results){
+			coll.find({}).toArray(function(err, results){
 				if (results) {
 					console.log("Successful got the products for direct sell.");
 					console.log("Email :  " + email);
@@ -103,9 +89,9 @@ exports.getAllProductsForAuction = function(req,res){
 
 		mongo.connect(mongoURL, function(){
 			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
+			var coll = mongo.collection('productsForAuction');
 
-			coll.find({},{"EmailId":1,"ProductsForAuction":1,"_id":0}).toArray(function(err, results){
+			coll.find({}).toArray(function(err, results){
 				if (results) {
 					console.log("Successful got the products for Auction sell.");
 					console.log("Email :  " + email);
@@ -177,8 +163,8 @@ exports.userAddToCart = function(req,res){
 };
 
 exports.addBidOnProduct = function(req,res){
-	/*get the product 
-	* get the userId
+	/*get the product  done
+	* get the userId done
 	* update the max bidder id in product only
 	* update the highest bid amount 
 	* add bid to user profile
@@ -298,20 +284,24 @@ exports.addProduct = function(req,res){
 	var IsBidItem = req.param("IsBidItem");
 	var Sold = 0;
 
-	var product = {ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: new Date()};
+	var CurrentDate = new Date();
+	var AuctionEndDate = new Date();
 
-	var productForBidding = {ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: new Date(), DateAdded: $date ,AuctionEndDate:{ $add: [ "$date", 4*24*60*60000 ] }};
+	//AuctionEndDate.setDate(AuctionEndDate+4);
+
+	console.log(AuctionEndDate);
+	//var product = ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: new Date(),Seller : userId};
+
+	//var productForBidding = {ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: new Date(), DateAdded: $date ,AuctionEndDate:{ $add: [ "$date", 4*24*60*60000 ] }};
 
 	if(userId != undefined ) {
 		if (IsBidItem == 0) {
 			mongo.connect(mongoURL, function () {
 				console.log('Connected to mongo at: ' + mongoURL);
-				var coll = mongo.collection('users');
+				var coll = mongo.collection('ProductsForDirectSell');
 
-				coll.update(
-					{ EmailId: userId },
-					{ $push: { ProductsForDirectSell: { $each: [product] } } }
-					, function (err, result) {
+				coll.insert({ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: CurrentDate, Seller : userId }
+				), function (err, result) {
 						if (result) {
 							console.log("Successful Added the products for direct sell.");
 							console.log("Email :  " + userId);
@@ -325,18 +315,17 @@ exports.addProduct = function(req,res){
 							json_responses = {"statusCode": 401};
 						}
 						res.send(json_responses);
-					});
+					}
 			});
 		}
 		else if(IsBidItem == 1) {
 			mongo.connect(mongoURL, function () {
-				console.log('Connected to mongo at: ' + mongoURL);
-				var coll = mongo.collection('users');
+				console.log('Inside productsForAuction Connected to mongo at: ' + mongoURL);
+				var coll = mongo.collection('productsForAuction');
 
-				coll.update(
-					{ EmailId: userId },
-					{ $push: { ProductsForAuction: { $each: [productForBidding] } } }
-					, function (err, result) {
+				//coll.insert({ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:1, DateAdded: currentDate, AuctionEndDate:{ $add: [ currentDate, 4*24*60*60000 ] }, Seller: userId}
+				coll.insert({ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:1, DateAdded: CurrentDate, AuctionEndDate:AuctionEndDate, Seller: userId}
+				),function (err, result) {
 						if (result) {
 							console.log("Successful Added the products for direct sell.");
 							console.log("Email :  " + userId);
@@ -350,10 +339,8 @@ exports.addProduct = function(req,res){
 							json_responses = {"statusCode": 401};
 						}
 						res.send(json_responses);
-					});
+				};
 			});
 		}
-
-
 	}
 };
