@@ -43,7 +43,8 @@ products.controller('products', function($scope, $filter, $http) {
 				method : "POST",
 				url : '/userAddToCart',//change the method to get 10 items at a time.
 				data : {
-					"product" : product
+					"product" : product,
+					"qtyInCart": 1
 				}
 			}).success(function(data) {
 				console.log("Item added successfully to the user cart.");

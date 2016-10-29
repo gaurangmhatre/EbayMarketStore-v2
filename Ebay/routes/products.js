@@ -122,28 +122,24 @@ exports.userAddToCart = function(req,res){
 	console.log("In userAddToCart method.");
 	
 	var Product = req.param("product");
-
+	var QtyInCart = req.param("qtyInCart");
 	var UserId =  req.session.userid;
 
-
-
-	console.log("Add to cart for: "+UserId+" itemId: "+Product.ItemName+" Qty:"+Product.Qty);
-	logger.log('info', "Add to cart for: "+UserId+" itemId: "+Product.ItemName+" Qty:"+Product.Qty);
-
+	console.log("Add to cart for: "+UserId+" itemId: "+Product._id+" Qty:"+QtyInCart);
+	logger.log('info', "Add to cart for: "+UserId+" itemId: "+Product._id+" Qty:"+QtyInCart);
 
 	Product.Qty="1";
 
 	if(UserId != undefined ) {
 		mongo.connect(mongoURL, function () {
 			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
+			var coll = mongo.collection('UserCart');
 
-			coll.update({"EmailId": UserId}, {$push: {"UserCart": Product}}), function (err, results) {
+			coll.insert({"ItemName":Product.ItemName, "userEmail":UserId ,"QtyInCart": QtyInCart }), function (err, results) {
 				if (results) {
-					console.log("Successful got the products for Auction sell.");
+					console.log("Successful updated the cart.");
 					console.log("Email :  " + UserId);
-					logger.log('info', 'Successful got the user data  for email:' + UserId);
-
+					logger.log('info', 'Successful updated the cart email:' + UserId);
 					json_responses = {"statusCode": 200, "results": results};
 				}
 				else {

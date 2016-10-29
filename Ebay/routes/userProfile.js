@@ -80,23 +80,27 @@ exports.getAllProductsInCart = function(req,res){
 	if(userId != undefined) {
 		mongo.connect(mongoURL, function(){
 			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
+			var coll = mongo.collection('UserCart');
 
-			coll.find({"EmailId": userId},{"UserCart":1,"_id":0}).toArray(function(err, results){
+			coll.find({"userEmail": userId}).toArray(function(err, results){
 				if (results) {
-
-
-
-
-
-
-
 
 					console.log("Successful got the products for direct sell.");
 					console.log("Email :  " + userId);
 					logger.log('info','Successful got the user data  for email:' + userId);
 
-					json_responses = {"statusCode" : 200, "results": results};
+                    var cartArray= [];
+
+                    for (var i = 0; i < results.length; i++) {
+                        var coll2 = mongo.collection('ProductsForDirectSell');
+                        coll2.find({"ItemName": results[i].ItemName}).toArray(function(err, result) {
+                            if (result) {
+                                    cartArray.push(result);
+                            }
+                        });
+                    }
+                    console.log(" cart item: "+cartArray);
+					json_responses = {"statusCode" : 200, "results": cartArray};
 				}
 				else {
 					console.log('No data retrieved for email: ' + userId);
