@@ -187,14 +187,35 @@ exports.addBidOnProduct = function(req,res){
 		mongo.connect(mongoURL, function () {
 			console.log('Connected to mongo at: ' + mongoURL);
 			var coll = mongo.collection('users');
-
-			coll.update({"EmailId": UserId}, {$push: {"UserCart": Product}}), function (err, results) {
+			var collForAction = mongo.collection('productsForAuction');
+			coll.update({"EmailId": UserId},{$push: {BidPlacedOnProducts: Item }}), function (err, results) {
 				if (results) {
-					console.log("Successful got the products for Auction sell.");
+					console.log("Successfully added bid to user table.");
 					console.log("Email :  " + UserId);
-					logger.log('info', 'Successful got the user data  for email:' + UserId);
+					logger.log('info', 'Successfully added bid to user table for email:' + UserId);
 
-					json_responses = {"statusCode": 200, "results": results};
+					json_responses = {"statusCode": 200};
+				}
+				else {
+					console.log('No data retrieved for email: ' + UserId);
+					logger.log('info', 'No data retrieved for email' + UserId);
+					json_responses = {"statusCode": 401};
+				}
+				//res.send(json_responses);
+			}
+			var id = new ObjectId(Item._id);
+			collForAction.update({_id:id}, {
+				$set: {
+					"MaxBidder": UserId,
+					"MaxBidAmount":BidAmount
+				}
+			}), function (err, results) {
+				if (results) {
+					console.log("Successfully added bid to products table.");
+					console.log("Email :  " + UserId);
+					logger.log('info', 'Successfully added bid to products table for email:' + UserId);
+
+					json_responses = {"statusCode": 200};
 				}
 				else {
 					console.log('No data retrieved for email: ' + UserId);
@@ -209,40 +230,6 @@ exports.addBidOnProduct = function(req,res){
 		var json_responses = {"statusCode": 401};
 		res.send(json_responses);
 	}
-
-
-	/*if(UserId != undefined ) {
-		var addBidOnProductQuery = "INSERT INTO bidderlist(BidderId,ItemId,BidAmount,BidTime)VALUES(" + UserId + "," + ItemId + "," + BidAmount + ",NOW());";
-		console.log("Query:: " + addBidOnProductQuery);
-		logger.log('info', "Query:: " + addBidOnProductQuery);
-		mysql.fetchData(function (err, results) {
-			if (err) {
-				throw err;
-			}
-			else {
-				if (results.length > 0) {
-					logger.log('info', "Results from addBidOnProductQuery for userId:: " + UserId);
-					json_responses = {
-						"statusCode": 200,
-						"results": results,
-						"BidAmount": 0
-					};
-
-					res.send(json_responses);
-				}
-				else {
-					console.log("No items to display");
-					logger.log('info', "No, Results from addBidOnProductQuery for userId:: " + UserId);
-					json_responses = {"statusCode": 401};
-					res.send(json_responses);
-				}
-			}
-		}, addBidOnProductQuery);
-	}*/
-	/*else {
-		var json_responses = {"statusCode": 401};
-		res.send(json_responses);
-	}*/
 };
 
 exports.getItemType = function(req,res){
