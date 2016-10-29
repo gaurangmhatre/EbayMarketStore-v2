@@ -280,12 +280,9 @@ exports.addProduct = function(req,res){
 	var CurrentDate = new Date();
 	var AuctionEndDate = new Date();
 
-	//AuctionEndDate.setDate(AuctionEndDate+4);
+	AuctionEndDate.setDate(AuctionEndDate.getDate()+4);
 
 	console.log(AuctionEndDate);
-	//var product = ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: new Date(),Seller : userId};
-
-	//var productForBidding = {ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: new Date(), DateAdded: $date ,AuctionEndDate:{ $add: [ "$date", 4*24*60*60000 ] }};
 
 	if(userId != undefined ) {
 		if (IsBidItem == 0) {
@@ -316,7 +313,6 @@ exports.addProduct = function(req,res){
 				console.log('Inside productsForAuction Connected to mongo at: ' + mongoURL);
 				var coll = mongo.collection('productsForAuction');
 
-				//coll.insert({ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:1, DateAdded: currentDate, AuctionEndDate:{ $add: [ currentDate, 4*24*60*60000 ] }, Seller: userId}
 				coll.insert({ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:1, DateAdded: CurrentDate, AuctionEndDate:AuctionEndDate, Seller: userId}
 				),function (err, result) {
 						if (result) {

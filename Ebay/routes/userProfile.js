@@ -365,55 +365,11 @@ function removingItemFromCart(userId,ItemId) {
 //Select BidderId,max(BidAmount) from bidderList where ItemId = (select (ItemId) from Item where  IsBidItem =1  and AuctionEndDate < now());
 exports.updateAuctionWinners = function(req,res){
 	console.log("inside updateAuctionWinners");
-	
-	var getAuctionWinner = "Select BidderId,max(BidAmount) from bidderList where ItemId = (select (ItemId) from Item where  IsBidItem =1  and AuctionEndDate < now()) and IsWinner<>1;";
-	console.log("Query:: " + getAuctionWinner);
-	logger.log('info','Query:: ' + getAuctionWinner);
-	mysql.fetchData(function(err,results) {
-		if(err) {
-			logger.log('error',err);
-			throw err;
-		}
-		else {
-			if(results.length > 0) {
-					console.log("Successful got the sold products.");
-					logger.log('info','Successful got the sold products for userId:: ' + userId);
-					json_responses = results;
-					}
-			else{
-					console.log("Invalid string.");
-					json_responses = {"statusCode" : 401};
-			}
-			res.send(json_responses);
-		}	
-		
-	},getAuctionWinner);
-	
 
-	if(userId != '') {
-		var getAllUserBiddingActivityQuery = "select  i.ItemName, i.ItemDescription, i.Price, b.BidAmount,b.BidTime  from bidderList as b left join item as i  on b.ItemId=i.ItemId where BidderId = "+userId+" order by BidTime desc";
-		console.log("Query:: " + getAllUserBiddingActivityQuery);
-		logger.log('info','Query:: ' + getAllUserBiddingActivityQuery);
-
-		mysql.fetchData(function(err,results) {
-			if(err) {
-				throw err;
-			}
-			else {
-				if(results.length > 0) {
-						console.log("Successful got the sold products.");
-						
-						json_responses = results;
-						}
-				else{
-						console.log("Invalid string.");
-						json_responses = {"statusCode" : 401};
-				}
-				res.send(json_responses);
-			}	
-			
-		},getAllUserBiddingActivityQuery);
-	}
+	/*1. get all the products from auction where Winner =userId and IsAuctionOver == true and Payed== false
+	*
+	*
+	* */
 }
  // Do not  remember why I wrote this.
 
@@ -424,7 +380,11 @@ exports.updatePaymentDetailsForAuction= function(req,res){
 	var creditCardNumber = req.param("CreditCardNumber");
 	var ItemId = req.param("ItemId");
 
-	if(userId != undefined) {
+	/* 1. update user, add the product to user collection
+	* 2. payed in statue true
+	* */
+
+	/*if(userId != undefined) {
 		var updatePaymentDetailsForAuctionQuery = "UPDATE `auctionwinners` SET `PaymentByCard` = " + creditCardNumber + ", `PaymentDate` = now(),`IsPaymentDone` = 1 WHERE `WinnerId` = " + userId + " and IsPaymentDone = 0;";
 		console.log("Query:: " + updatePaymentDetailsForAuctionQuery);
 		logger.log('info', 'Query:: ' + updatePaymentDetailsForAuctionQuery);
@@ -450,10 +410,10 @@ exports.updatePaymentDetailsForAuction= function(req,res){
 			}
 		});
 	}
-    /*else {
+    /!*else {
         var json_responses = {"statusCode": 401};
         res.send(json_responses);
-    }*/
+    }*!/*/
 
 }
 
@@ -513,9 +473,6 @@ exports.getAllWonAuctions= function(req,res){
 	 res.send(json_responses);
 	 }*/
 }
-
-
-
 
 //History
 exports.getAllUserDirectBuyingActivities= function(req,res){

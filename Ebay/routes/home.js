@@ -36,6 +36,7 @@ exports.redirectToHome = function(req,res) {
 
 exports.signup=function (req,res) {
 	getAllAuctionResults();
+	
 	res.render('signup', { validationMessage: 'Empty Message'});
 };
 
@@ -43,45 +44,6 @@ exports.signin = function(req,res){
 	getAllAuctionResults();
 	res.render('signin',{validationMessage:'Empty Message'});
 };
-
-/*exports.checklogin= function(req,res) {
-
-	console.log("in checklogin");
-
-	var email = req.param("email");
-	var password = req.param("password");
-
-	logger.log('info', 'Signin request from: '+ email);
-	console.log("email :: " + email);
-
-	if(email != '') {
-
-			passport.authenticate('login', function(err, user) {
-			if(err) {
-				console.log(err);
-			}
-
-			if(!user) {
-				//return res.redirect('/');
-				var json_responses = {"statusCode": 401};
-				res.send(json_responses);
-			}
-
-			req.logIn(user, {session:false}, function(err) {
-				if(err) {
-					console.log(err);
-				}
-
-				req.session.userid = user.EmailId;
-				console.log("session initilized")
-				//return res.render('successLogin', {emailId:user.EmailId});
-
-				var json_responses = {"statusCode": 200};
-				res.send(json_responses);
-			})
-			});
-	}
-};*/
 
 exports.checksignup = function(req,res){ //check if email ID is valid or not
 	console.log("In check signup .");
@@ -189,11 +151,9 @@ exports.afterSignup = function(req,res){// load new user data in database
 
 };
 
-
-
 function getAllAuctionResults(){
 	console.log("In GetAllAuction method.");
-	
+	/*
 	var getAllItemsWithCompletedAction =  "select ItemId from item as i where i.IsBidItem =1  and i.AuctionEndDate < now() and sold = 0";
 	console.log("Query is :: " + getAllItemsWithCompletedAction);
 	logger.log('info', "Query:: " + getAllItemsWithCompletedAction);
@@ -218,7 +178,25 @@ function getAllAuctionResults(){
 				logger.log('info', "Item doesn't for exist in auction completed list");
 			}
 		}
-	}, getAllItemsWithCompletedAction); 
+	}, getAllItemsWithCompletedAction); */
+	
+	var currentDate=  new Date();
+	coll= mongo.collection("productsForAuction");
+	coll.find({AuctionEndDate:{$lt:currentDate}}).toArray(function(err,results){ // and check IsAuctionOver flag 
+		
+		
+		for(var i=0;i<results.length;i++){
+			
+			/*Auction
+			* 1. set IsAuctionOver flag to true
+			* 2. set Payed  flag in products to false
+			*  
+			* */
+			
+		}
+		
+	})
+	
 }
 
 function itemIsSold(ItemId) {
