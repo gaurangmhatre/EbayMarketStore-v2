@@ -196,11 +196,19 @@ exports.buyItemsInCart = function(req,res){
                     for (var i = 0; i < results.length; i++) {
                         //push items to PurchasedProducts
 
+						//update seller
 						callUser.update(
-                            {EmailId: userId},
-                            {$push: {PurchasedProducts: {$each: [results[0]]}}}
+                            {EmailId: results[i].Seller},
+                            {$push: {SoldProducts: {$each: [results[0]]}}}
                         )
 
+						//update buyer
+						callUser.update(
+							{EmailId: userId},
+							{$push: {PurchasedProducts: {$each: [results[0]]}}}
+						)
+
+						//update Qty
 						var id = new ObjectId(results[i].ItemId);
 						callProducts.update({_id:id}, {
 							$set: {
@@ -208,6 +216,7 @@ exports.buyItemsInCart = function(req,res){
 							}
 						})
 
+						// remove from cart
 						coll.remove({ItemName:results[i].ItemName}
 						)
 
