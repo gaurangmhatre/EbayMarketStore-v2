@@ -27,24 +27,14 @@ userProfile.controller('cartController', function($scope,$http) {
 			$scope.TotalCostOfCart=0
 			$scope.allProductsInCart = [];
 
+			$scope.allProductsInCart = data.results;
 
-			angular.forEach(data.results[0].UserCart, function(product, key) {
-				$scope.allProductsInCart.push(product);
-			});
-
-			
 			for(product in $scope.allProductsInCart)
 			{
 				$scope.TotalCostOfCart = $scope.TotalCostOfCart+parseInt($scope.allProductsInCart[product].Price);
 			}
 			
-			/*if($scope.TotalCostOfCart>0)
-			{*/
 					$scope.donotloadtemplate= false;
-			/*}*/
-			
-			//set all variables.
-				 
 		}).error(function(error) {
 			console.log("inside error");
 			console.log(error);

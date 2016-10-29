@@ -1,5 +1,6 @@
 var mysql = require('./mysql');
 var winston = require('winston');
+var ObjectId = require('mongodb').ObjectId;
 
 var mongo = require('./mongo.js');
 var mongoURL = "mongodb://localhost:27017/ebay";
@@ -28,7 +29,7 @@ exports.getAllProducts = function(req,res){
 			console.log('Connected to mongo at: ' + mongoURL);
 			var coll = mongo.collection('ProductsForDirectSell');
 
-			coll.find({}).toArray(function(err, results){
+			coll.find({Qty:{ $gt: 0 }}).toArray(function(err, results){
 				if (results) {
 					console.log("Successful got the products for direct sell.");
 					console.log("Email :  " + email);
@@ -125,7 +126,16 @@ exports.userAddToCart = function(req,res){
 	var QtyInCart = req.param("qtyInCart");
 	var UserId =  req.session.userid;
 
-	console.log("Add to cart for: "+UserId+" itemId: "+Product._id+" Qty:"+QtyInCart);
+	var ItemId =  new ObjectId(Product._id);
+	var ItemName  = Product.ItemName
+	var ItemDescription = Product.ItemDescription
+	var Price = Product.Price
+	var QtyAvailable = Product.Qty
+	var DateAdded = Product.DateAdded
+	var Seller = Product.Seller
+
+
+	console.log("Add to cart for: "+UserId+" itemId: "+Product._id+" Qty:"+QtyInCart );
 	logger.log('info', "Add to cart for: "+UserId+" itemId: "+Product._id+" Qty:"+QtyInCart);
 
 	Product.Qty="1";
@@ -135,7 +145,7 @@ exports.userAddToCart = function(req,res){
 			console.log('Connected to mongo at: ' + mongoURL);
 			var coll = mongo.collection('UserCart');
 
-			coll.insert({"ItemName":Product.ItemName, "userEmail":UserId ,"QtyInCart": QtyInCart }), function (err, results) {
+			coll.insert({"ItemId":ItemId, "userEmail":UserId ,"QtyInCart": QtyInCart ,"ItemName":ItemName, "ItemDescription":ItemDescription,"Price":Price,"QtyAvailable":QtyAvailable,"DateAdded":DateAdded,"Seller":Seller}), function (err, results) {
 				if (results) {
 					console.log("Successful updated the cart.");
 					console.log("Email :  " + UserId);

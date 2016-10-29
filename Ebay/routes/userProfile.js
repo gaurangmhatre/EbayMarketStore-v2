@@ -1,5 +1,6 @@
 var mysql = require('./mysql');
 var winston = require('winston');
+var ObjectId = require('mongodb').ObjectId;
 
 var mongo = require('./mongo.js');
 var mongoURL = "mongodb://localhost:27017/ebay";
@@ -76,7 +77,8 @@ exports.getAllProductsInCart = function(req,res){
 	console.log("inside get All Products from cart for user: "+req.session.userid);
 	
 	var userId = req.session.userid;
-	
+	var flag=false;
+	var j=0;
 	if(userId != undefined) {
 		mongo.connect(mongoURL, function(){
 			console.log('Connected to mongo at: ' + mongoURL);
@@ -91,29 +93,42 @@ exports.getAllProductsInCart = function(req,res){
 
                     var cartArray= [];
 
-                    for (var i = 0; i < results.length; i++) {
+                    /*for (var i = 0; i < results.length; i++) {
+						var ItemId= results[i].ItemId
                         var coll2 = mongo.collection('ProductsForDirectSell');
-                        coll2.find({"ItemName": results[i].ItemName}).toArray(function(err, result) {
+                        //coll2.find({_id: ItemId}).toArray(function(err, result) {
+						coll2.find({ItemName: results[i].ItemName}).toArray(function(err, result) {
                             if (result) {
                                     cartArray.push(result);
+									flag=true;
+									j=i;
                             }
+
+							if(j==results.length)
+							{
+								json_responses = {"statusCode": 200, "results": cartArray};
+								res.send(json_responses);
+							}
+
                         });
-                    }
-                    console.log(" cart item: "+cartArray);
-					json_responses = {"statusCode" : 200, "results": cartArray};
+
+                    }*/
+                    console.log(" cart item: "+results);
+					json_responses = {"statusCode": 200, "results": results};
 				}
 				else {
 					console.log('No data retrieved for email: ' + userId);
 					logger.log('info','No data retrieved for email' + userId);
 					json_responses = {"statusCode" : 401};
 				}
-				res.send(json_responses);
 			});
-		});
 
+		});/*
+		if(flag==true) {
+
+		}*/
+		res.send(json_responses);
 	}
-
-
 };
 
 //Not complete
@@ -130,16 +145,19 @@ exports.removeItemFromCart = function(req,res){
 	if(userId != undefined) {
 		mongo.connect(mongoURL, function(){
 			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
+			var coll = mongo.collection('UserCart');
 
 			console.log('Connected to inside remove method');
+			var itemid = item.ItemId;
+			var itemName = item.ItemName;
+			//coll.remove({ItemId:itemid}
 
-			coll.update({'EmailId':userId},{$pull: { 'UserCart.ItemName':item.ItemName }
-			}),function(err, results){
+			coll.remove({ItemName:itemName}
+			),function(err, results){
 				if (results) {
-					console.log("Successful got the products for direct sell.");
+					console.log("Successful removed item from cart.");
 					console.log("Email :  " + userId);
-					logger.log('info','Successful got the user data  for email:' + userId);
+					logger.log('info','Successful removed item from cart.:' + userId);
 
 					json_responses = {"statusCode" : 200, "results": results};
 				}
@@ -166,29 +184,38 @@ exports.buyItemsInCart = function(req,res){
 
         mongo.connect(mongoURL, function () {
             console.log('Connected to mongo at: ' + mongoURL);
-            var coll = mongo.collection('users');
-
-            coll.find({"EmailId": userId}, {"UserCart": 1, "_id": 0}).toArray(function (err, results) {
+            var coll = mongo.collection('UserCart');
+			var callUser = mongo.collection('users');
+			var callProducts = mongo.collection('ProductsForDirectSell');
+            coll.find({"userEmail": userId}).toArray(function (err, results) {
                 if (results) {
                     console.log("Successful got the products in cart.");
                     console.log("Email :  " + userId);
                     logger.log('info', 'Successful got the the products in cart for:' + userId);
 
-                    for (var i = 0; i < results[0].UserCart.length; i++) {
+                    for (var i = 0; i < results.length; i++) {
                         //push items to PurchasedProducts
-                        coll.update(
-                            {EmailId: userId},
-                            {$push: {PurchasedProducts: {$each: [results[0].UserCart[i]]}}}
-                        )
-                        //AddItemsToPurchasedProducts(userId,results[0].UserCart[i]);
 
-                        //update qty
+						callUser.update(
+                            {EmailId: userId},
+                            {$push: {PurchasedProducts: {$each: [results[0]]}}}
+                        )
+
+						var id = new ObjectId(results[i].ItemId);
+						callProducts.update({_id:id}, {
+							$set: {
+								"Qty": results[i].QtyAvailable - results[i].QtyInCart
+							}
+						})
+
+						coll.remove({ItemName:results[i].ItemName}
+						)
 
                         /*coll.find(
                          { PurchasedProducts:{ItemName: results[0].UserCart[i].ItemName}},
                          { $inc: { PurchasedProducts: { Qty:-1 } } }
                          )*/
-                        coll.find({'ProductsForDirectSell.ItemName': results[0].UserCart[i].ItemName}).toArray(function (err, userWithProduct) {
+                       /* coll.find({'ProductsForDirectSell.ItemName': results[0].UserCart[i].ItemName}).toArray(function (err, userWithProduct) {
                             if (userWithProduct) {
                                 console.log("Successful got all the seller with product in list.");
                                 console.log("Email :  " + userId);
@@ -210,7 +237,7 @@ exports.buyItemsInCart = function(req,res){
                         coll.update(
                             {EmailId: userId},
                             {$inc: {quantity: -2, "metrics.orders": 1}}
-                        )
+                        )*/
                     }
                 }
                 else {
