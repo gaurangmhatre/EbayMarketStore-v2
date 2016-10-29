@@ -186,8 +186,10 @@ app.post('/updatePaymentDetailsForAuction',userProfile.updatePaymentDetailsForAu
 app.post('/getAllAuctionProductHistory',userProfile.getAllAuctionProductHistory);
 
 //testing
+/*
 app.post('/getUserAccountDetailsWithConnetionPool',userProfile.getUserAccountDetailsWithConnetionPool);
 app.post('/getUserAccountDetailsWithoutConnetionPool',userProfile.getUserAccountDetailsWithoutConnetionPool);
+*/
 
 
 app.get('/products',products.getProductsPage);

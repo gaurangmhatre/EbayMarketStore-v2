@@ -45,9 +45,9 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 		
 		
 		
-		$scope.addBidOnProduct = function(ItemId,BidAmount,MaxBidAmount,Price) {
+		$scope.addBidOnProduct = function(Item,BidAmount,MaxBidAmount,Price) {
 			
-			console.log("Selected ItemId : "+ItemId);
+			console.log("Selected ItemId : "+Item.ItemId);
 			if(Price<BidAmount) {
 				if(MaxBidAmount<BidAmount) {
 					alert("Bid placed!!");
@@ -55,7 +55,7 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 						method: "POST",
 						url: '/addBidOnProduct',//change the method to get 10 items at a time.
 						data: {
-							"ItemId": ItemId,
+							"Item": Item,
 							"BidAmount": BidAmount
 						}
 					}).success(function (data) {

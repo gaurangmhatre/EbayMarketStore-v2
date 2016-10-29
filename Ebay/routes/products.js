@@ -177,13 +177,49 @@ exports.userAddToCart = function(req,res){
 };
 
 exports.addBidOnProduct = function(req,res){
+	/*get the product 
+	* get the userId
+	* update the max bidder id in product only
+	* update the highest bid amount 
+	* add bid to user profile
+	* */
+	
 	console.log("In addBidOnProduct method.");
 	
-	var ItemId = req.param("ItemId");
+	var Item = req.param("Item");
 	var BidAmount = req.param("BidAmount");
 	var UserId =  req.session.userid;
 
+
 	if(UserId != undefined ) {
+		mongo.connect(mongoURL, function () {
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('users');
+
+			coll.update({"EmailId": UserId}, {$push: {"UserCart": Product}}), function (err, results) {
+				if (results) {
+					console.log("Successful got the products for Auction sell.");
+					console.log("Email :  " + UserId);
+					logger.log('info', 'Successful got the user data  for email:' + UserId);
+
+					json_responses = {"statusCode": 200, "results": results};
+				}
+				else {
+					console.log('No data retrieved for email: ' + UserId);
+					logger.log('info', 'No data retrieved for email' + UserId);
+					json_responses = {"statusCode": 401};
+				}
+				res.send(json_responses);
+			}
+		})
+	}
+	else {
+		var json_responses = {"statusCode": 401};
+		res.send(json_responses);
+	}
+
+
+	/*if(UserId != undefined ) {
 		var addBidOnProductQuery = "INSERT INTO bidderlist(BidderId,ItemId,BidAmount,BidTime)VALUES(" + UserId + "," + ItemId + "," + BidAmount + ",NOW());";
 		console.log("Query:: " + addBidOnProductQuery);
 		logger.log('info', "Query:: " + addBidOnProductQuery);
@@ -210,7 +246,7 @@ exports.addBidOnProduct = function(req,res){
 				}
 			}
 		}, addBidOnProductQuery);
-	}
+	}*/
 	/*else {
 		var json_responses = {"statusCode": 401};
 		res.send(json_responses);

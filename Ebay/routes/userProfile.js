@@ -72,113 +72,6 @@ exports.getUserAccountDetails = function(req,res){
 	}
 };
 
-//Connetion pool test starts
-
-exports.getUserAccountDetailsWithoutConnetionPool = function(req,res){
-
-	//console.log("userId: "+req.session.userid);
-
-	var userId = 1;
-
-	if(userId != undefined ) {
-		var getUserAccountDetailsQuery = "select UserId,FirstName,LastName,EmailId,Password,Address,CreditCardNumber,DateOfBirth,LastLoggedIn from user where UserId= "+ userId+";";
-		console.log("Query :: " + getUserAccountDetailsQuery);
-		logger.log('info','Query:: ' + getUserAccountDetailsQuery);
-
-		mysql.fetchDataWithoutPool(function(err,results) {
-			if(err) {
-				throw err;
-				logger.log('error',err);
-			}
-			else {
-				if(results.length > 0) {
-					console.log("Successful got the user data");
-					console.log("UserId :  " + userId);
-					logger.log('info','Successful got the user data  for userId' + userId);
-
-					json_responses = {"UserId" : results[0].UserId
-						,"FirstName": results[0].FirstName
-						,"LastName": results[0].LastName
-						,"EmailId":results[0].EmailId
-						,"Address":results[0].Address
-						,"CreditCardNumber":results[0].CreditCardNumber
-						,"DateOfBirth":results[0].DateOfBirth
-						,"LastLoggedIn":results[0].LastLoggedIn
-					};
-				}
-				else{
-					res.send(json_responses);
-					console.log('No data retrieved for userId' + userId);
-					logger.log('info','No data retrieved for userId' + userId);
-
-					json_responses = {"statusCode" : 401};
-				}
-				res.send(json_responses);
-			}
-
-		}, getUserAccountDetailsQuery);
-
-	}
-	else {
-		var json_responses = {"statusCode": 401};
-		res.send(json_responses);
-	}
-};
-
-
-exports.getUserAccountDetailsWithConnetionPool = function(req,res){
-
-	//console.log("userId: "+req.session.userid);
-
-	var userId = 1;
-
-	if(userId != undefined ) {
-		var getUserAccountDetailsQuery = "select UserId,FirstName,LastName,EmailId,Password,Address,CreditCardNumber,DateOfBirth,LastLoggedIn from user where UserId= "+ userId+";";
-		console.log("Query :: " + getUserAccountDetailsQuery);
-		logger.log('info','Query:: ' + getUserAccountDetailsQuery);
-		mysqlConnetionPoolTest.fetchData(function(err,results) {
-			if(err) {
-				throw err;
-				logger.log('error',err);
-			}
-			else {
-				if(results.length > 0) {
-					console.log("Successful got the user data");
-					console.log("UserId :  " + userId);
-					logger.log('info','Successful got the user data  for userId' + userId);
-
-					json_responses = {"UserId" : results[0].UserId
-						,"FirstName": results[0].FirstName
-						,"LastName": results[0].LastName
-						,"EmailId":results[0].EmailId
-						,"Address":results[0].Address
-						,"CreditCardNumber":results[0].CreditCardNumber
-						,"DateOfBirth":results[0].DateOfBirth
-						,"LastLoggedIn":results[0].LastLoggedIn
-					};
-				}
-				else{
-					res.send(json_responses);
-					console.log('No data retrieved for userId' + userId);
-					logger.log('info','No data retrieved for userId' + userId);
-
-					json_responses = {"statusCode" : 401};
-				}
-				res.send(json_responses);
-			}
-
-		}, getUserAccountDetailsQuery);
-
-	}
-	else {
-		var json_responses = {"statusCode": 401};
-		res.send(json_responses);
-	}
-};
-
-//connetion pool test ends
-
-
 exports.getAllProductsInCart = function(req,res){
 	console.log("inside get All Products from cart for user: "+req.session.userid);
 	
@@ -260,81 +153,86 @@ exports.removeItemFromCart = function(req,res){
 };
 
 exports.buyItemsInCart = function(req,res){
-/*
- * 1. Get all items from cart table by userid
- * 2. push the items to sold table.
- * 3. empty cart.
- * 4. Qty -= 1 in items table. 
- */
-	
+
 	var userId = req.session.userid;
 
 	var creditCardNumber = req.param("CreditCardNumber");
-	
+
 	if(userId != undefined) {
-		if(userId != undefined) {
-			mongo.connect(mongoURL, function(){
-				console.log('Connected to mongo at: ' + mongoURL);
-				var coll = mongo.collection('users');
 
-				coll.find({"EmailId": userId},{"UserCart":1,"_id":0}).toArray(function(err, results){
-					if (results) {
-						console.log("Successful got the products in cart.");
-						console.log("Email :  " + userId);
-						logger.log('info','Successful got the the products in cart for:' + userId);
+        mongo.connect(mongoURL, function () {
+            console.log('Connected to mongo at: ' + mongoURL);
+            var coll = mongo.collection('users');
 
-						coll.update(
-							{ EmailId: userId },
-							{ $push: { PurchasedProducts: { $each: [results] } } }
-							, function (err, result) {
-								if (result) {
-									console.log("Successful Added the products in bought products.");
-									console.log("Email :  " + userId);
-									logger.log('info', 'Successful Added the products in bought products for :' + userId);
+            coll.find({"EmailId": userId}, {"UserCart": 1, "_id": 0}).toArray(function (err, results) {
+                if (results) {
+                    console.log("Successful got the products in cart.");
+                    console.log("Email :  " + userId);
+                    logger.log('info', 'Successful got the the products in cart for:' + userId);
 
-									coll.update(
-										{ EmailId: userId },
-										{ $pull: { UserCart: { $each: [results] } } }
-										, function (err, result) {
-											if (result) {
-												json_responses = {"statusCode": 200};
-												
-											}
-											else{
-												json_responses = {"statusCode": 200};
-											
-											}
-										}
-									);
-									
-								}
-								else {
-									console.log('No item in cart email: ' + userId);
-									logger.log('info', 'No item in cart email' + userId);
-									//json_responses = {"statusCode": 401};
-								}
-								
-							});
-						
-					}
-					else {
-						console.log('No data retrieved for email: ' + userId);
-						logger.log('info','No data retrieved for email' + userId);
-						json_responses = {"statusCode" : 401};
-					}
-					res.send(json_responses);
-				});
-			})
+                    for (var i = 0; i < results[0].UserCart.length; i++) {
+                        //push items to PurchasedProducts
+                        coll.update(
+                            {EmailId: userId},
+                            {$push: {PurchasedProducts: {$each: [results[0].UserCart[i]]}}}
+                        )
+                        //AddItemsToPurchasedProducts(userId,results[0].UserCart[i]);
 
-		}
-	}
-    /*else {
-        var json_responses = {"statusCode": 401};
-        res.send(json_responses);
-    }*/
+                        //update qty
+
+                        /*coll.find(
+                         { PurchasedProducts:{ItemName: results[0].UserCart[i].ItemName}},
+                         { $inc: { PurchasedProducts: { Qty:-1 } } }
+                         )*/
+                        coll.find({'ProductsForDirectSell.ItemName': results[0].UserCart[i].ItemName}).toArray(function (err, userWithProduct) {
+                            if (userWithProduct) {
+                                console.log("Successful got all the seller with product in list.");
+                                console.log("Email :  " + userId);
+
+                                //update qty
+                                for (var i = 0; i < userWithProduct[0].UserCart.length; i++) {
+                                    if (results[0].UserCart[i].ItemName == userWithProduct[0].UserCart.ItemName) {
+                                        userWithProduct[0].UserCart.Qty = parseInt(userWithProduct[0].UserCart.Qty) - 1;
+                                    }
+                                }
+
+
+                                //remove items from cart
+
+                            }
+                        });
+
+
+                        coll.update(
+                            {EmailId: userId},
+                            {$inc: {quantity: -2, "metrics.orders": 1}}
+                        )
+                    }
+                }
+                else {
+                    console.log('No data retrieved for email: ' + userId);
+                    logger.log('info', 'No data retrieved for email' + userId);
+                    json_responses = {"statusCode": 401};
+                }
+                res.send(json_responses);
+            });
+        })
+    }
+
 }
 
+/*function AddItemsToPurchasedProducts(userId,item)
+{
+	mongo.connect(mongoURL, function(){
+		var coll = mongo.collection('users');
 
+					coll.update(
+						{ EmailId: userId },
+						{ $push: { PurchasedProducts: { $each: item} } }
+					)
+
+		});
+}*/
 
 function AddItemToSoldTable(Item) {
 
@@ -545,9 +443,6 @@ function UpdateItemStatusToSold(ItemId) {
 	});
 }
 
-
-//-------------------------------------
-//history
 exports.getAllWonAuctions= function(req,res){
 	console.log("inside getAllWonAuctions for user: "+req.session.userid);
 
@@ -578,6 +473,8 @@ exports.getAllWonAuctions= function(req,res){
 	 res.send(json_responses);
 	 }*/
 }
+
+
 
 
 //History
