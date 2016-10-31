@@ -25,15 +25,12 @@ userProfile.controller('auctionWonController',function($scope, $filter,$http){
 			console.log("data is ::");
 			console.log(data);
 			$scope.TotalCostOfItems=0;
-			$scope.allProductsWon= data;
+			$scope.allProductsWon= data.results;
 			
 			
 			for(product in $scope.allProductsWon)
 			{
-				$scope.TotalCostOfItems = $scope.TotalCostOfItems+$scope.allProductsWon[product].BidAmount;
-
-				//temp code
-				//$scope.ItemId = $scope.allProductsWon[product].ItemId;
+				$scope.TotalCostOfItems = $scope.TotalCostOfItems+$scope.allProductsWon[product].MaxBidAmount;
 			}
 
 			if($scope.TotalCostOfItems>0)
@@ -63,13 +60,6 @@ userProfile.controller('auctionWonController',function($scope, $filter,$http){
 			console.log("data is ::");
 			console.log(data);
 			
-			
-			/*$scope.UserId = data.UserId;
-			$scope.FirstName = data.FirstName;
-			$scope.LastName = data.LastName;
-			$scope.EmailId = data.EmailId;*/
-
-
 			if(data.Address!="undefined")
 			{
 				$scope.Address = data.Address;
@@ -109,8 +99,7 @@ userProfile.controller('auctionWonController',function($scope, $filter,$http){
 				url: '/updatePaymentDetailsForAuction',
 				data: {
 					//Address: $scope.Address,
-					CreditCardNumber: CreditCardNumber,
-					ItemId: $scope.allProductsWon[0].ItemId
+					CreditCardNumber: CreditCardNumber
 				}
 			}).success(function (data) {
 				console.log("inside success");

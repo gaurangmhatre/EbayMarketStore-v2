@@ -1,6 +1,7 @@
 var mysql = require('./mysql');
 var bcrypt = require('./bCrypt.js');
 var winston = require('winston');
+var ObjectId = require('mongodb').ObjectId;
 
 var mongo = require('./mongo.js');
 /*
@@ -153,50 +154,32 @@ exports.afterSignup = function(req,res){// load new user data in database
 
 function getAllAuctionResults(){
 	console.log("In GetAllAuction method.");
-	/*
-	var getAllItemsWithCompletedAction =  "select ItemId from item as i where i.IsBidItem =1  and i.AuctionEndDate < now() and sold = 0";
-	console.log("Query is :: " + getAllItemsWithCompletedAction);
-	logger.log('info', "Query:: " + getAllItemsWithCompletedAction);
-
-	mysql.fetchData(function(err,results) {
-		if(err) {
-			throw err;
-			logger.log('error', err);
-		}
-		else {
-			if(results.length > 0) {
-				console.log("Items exists!");
-				for(result in results)
-				{
-					addAuctionWinnerToTheList(results[result].ItemId);	
-					itemIsSold(results[result].ItemId);
-				}	
-			}
-			else {
-				console.log("Item doesn't exist")
-				//res.send("false");
-				logger.log('info', "Item doesn't for exist in auction completed list");
-			}
-		}
-	}, getAllItemsWithCompletedAction); */
-	
 	var currentDate=  new Date();
-	coll= mongo.collection("productsForAuction");
-	coll.find({AuctionEndDate:{$lt:currentDate}}).toArray(function(err,results){ // and check IsAuctionOver flag 
-		
-		
-		for(var i=0;i<results.length;i++){
-			
-			/*Auction
-			* 1. set IsAuctionOver flag to true
-			* 2. set Payed  flag in products to false
-			*  
-			* */
-			
-		}
-		
-	})
-	
+
+	mongo.connect(mongoURL, function() {
+
+		var coll= mongo.collection('productsForAuction');
+		var callProducts= mongo.collection('productsForAuction');
+
+		coll.find({AuctionEndDate: {$lt: currentDate}, IsAuctionOver: false}).toArray(function (err, results) {
+			for (var i = 0; i < results.length; i++) {
+				/*Auction
+				 * 1. set IsAuctionOver flag to true
+				 * 2. set Payed  flag in products to false
+				 * */
+
+				var id = new ObjectId(results[i]._id);
+				callProducts.update({_id: id}, {
+					$set: {
+						"IsAuctionOver": true,
+						"IsPayed": false
+					}},
+					{upsert:true}
+				)
+			}
+
+		})
+	});
 }
 
 function itemIsSold(ItemId) {

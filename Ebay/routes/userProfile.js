@@ -367,12 +367,10 @@ exports.updateAuctionWinners = function(req,res){
 	console.log("inside updateAuctionWinners");
 
 	/*1. get all the products from auction where Winner =userId and IsAuctionOver == true and Payed== false
-	*
-	*
 	* */
-}
- // Do not  remember why I wrote this.
 
+
+}
 
 exports.updatePaymentDetailsForAuction= function(req,res){
 	console.log("Inside updatePaymentDetailsForAuction method.")
@@ -383,7 +381,6 @@ exports.updatePaymentDetailsForAuction= function(req,res){
 	/* 1. update user, add the product to user collection
 	* 2. payed in statue true
 	* */
-
 	/*if(userId != undefined) {
 		var updatePaymentDetailsForAuctionQuery = "UPDATE `auctionwinners` SET `PaymentByCard` = " + creditCardNumber + ", `PaymentDate` = now(),`IsPaymentDone` = 1 WHERE `WinnerId` = " + userId + " and IsPaymentDone = 0;";
 		console.log("Query:: " + updatePaymentDetailsForAuctionQuery);
@@ -450,9 +447,9 @@ exports.getAllWonAuctions= function(req,res){
 
 	if(userId != undefined) {
 		console.log('Connected to mongo at: ' + mongoURL);
-		var coll = mongo.collection('users');
+		var coll = mongo.collection('productsForAuction');
 
-		coll.find({"EmailId": userId},{"EmailId":1,"BidPlacedOnProducts":1,"_id":0}).toArray(function(err, results){
+		coll.find({"MaxBidder": userId, "IsAuctionOver":true}).toArray(function(err, results){
 			if (results) {
 				console.log("Successful got the products for direct sell.");
 				console.log("Email :  " + userId);
