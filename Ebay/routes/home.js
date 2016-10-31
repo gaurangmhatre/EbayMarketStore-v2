@@ -4,11 +4,9 @@ var winston = require('winston');
 var ObjectId = require('mongodb').ObjectId;
 
 var mongo = require('./mongo.js');
-/*
 
-var passport = require('passport');
-//require('./routes/passport')(passport);
- */
+var mq_client = require('../rpc/client');
+
 var mongoURL = "mongodb://localhost:27017/ebay";
 
 
@@ -46,7 +44,7 @@ exports.signin = function(req,res){
 	res.render('signin',{validationMessage:'Empty Message'});
 };
 
-exports.checksignup = function(req,res){ //check if email ID is valid or not
+/*exports.checksignup = function(req,res){ //check if email ID is valid or not
 	console.log("In check signup .");
 
 	//request parameters
@@ -72,6 +70,35 @@ exports.checksignup = function(req,res){ //check if email ID is valid or not
 
 				res.send(json_responses);
 			});
+		});
+	}
+};*/
+exports.checksignup = function(req,res){ //check if email ID is valid or not
+	console.log("In check signup .");
+
+	//request parameters
+	var email = req.param("email");
+	var msg_payload = {"email":email};
+
+	if(email!='') {
+		//check if email already exists
+		mq_client.make_request('checksignup_queue',msg_payload, function(err,results){
+
+			console.log(results);
+			if(err){
+				throw err;
+			}
+			else
+			{
+				if(results.statusCode == 200){
+					console.log("valid Login");
+					res.send({"statusCode" : 200});
+				}
+				else {
+					console.log("Invalid Login");
+					res.send({"statusCode" : 401});
+				}
+			}
 		});
 	}
 };
@@ -104,24 +131,6 @@ exports.afterSignup = function(req,res){// load new user data in database
 	console.log("Query:: " + query);
 	logger.log('info', "Query:: " + query);
 */
-/*
-
-
-	mysql.storeData(query, function(err, result){
-		//render on success
-		if(!err){
-			console.log('Valid SignUp!');
-			logger.log('info', "Valid Sign up for: "+ email);
-			res.send("true");
-		}
-		//render or error
-		else{
-			console.log('Invalid SingUp!');
-			logger.log('info', "Invalid Sign up for: "+ email);
-			res.send("false");
-		}
-	});
-*/
 
 	mongo.connect(mongoURL, function(){
 		console.log('Connected to mongo at: ' + mongoURL);
@@ -146,7 +155,7 @@ exports.afterSignup = function(req,res){// load new user data in database
 				res.send("false");
 			}
 
-			res.send(json_responses);
+			res.send("true");
 		});
 	});
 

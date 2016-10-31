@@ -6,6 +6,7 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "amqp": "^0.2.6",
     "angular": "^1.5.8",
     "chai": "^3.5.0",
     "client-sessions": "^0.7.0",
