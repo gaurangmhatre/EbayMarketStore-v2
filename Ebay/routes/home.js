@@ -123,14 +123,39 @@ exports.afterSignup = function(req,res){// load new user data in database
 	console.log("Address : " + Address);
 	console.log("creditCardNumber : " + creditCardNumber);
 	console.log("dateOfBirth :: " +dateOfBirth);
-/*
-	var hash = bcrypt.hashSync(password);
-	logger.log('info', "SignUp for new user: Firstname :: " + firstname+ " Lastname :: " + lastname + " email :: " + email+ " password :: " + hash +" contact :: " + contact +" location : " + location+" dateOfBirth :: " +dateOfBirth+" creditCardNumber : " + creditCardNumber);
 
-	var query = "INSERT INTO user (FirstName, LastName, EmailId, Password, Address, CreditCardNumber,DateOfBirth) VALUES ('" + firstname + "','" + lastname + "','" + email + "','" + hash + "','" + location + "','" + creditCardNumber + "','"+dateOfBirth+"')";
-	console.log("Query:: " + query);
-	logger.log('info', "Query:: " + query);
-*/
+	var msg_payload = {"firstname": firstname,"lastname": lastname,"email":email,"password" : password, "contact" : contact,"Address" : Address,"creditCardNumber" : creditCardNumber,"dateOfBirth" :dateOfBirth};
+
+	if(email!='') {
+		//check if email already exists
+		mq_client.make_request('handle_aftersignup_request',msg_payload, function(err,results){
+
+			console.log(results);
+			if(err){
+				throw err;
+			}
+			else
+			{
+				if(results.statusCode == 200){
+					console.log("valid Login");
+					res.send("true");
+				}
+				else {
+					console.log("Invalid Login");
+					res.send("false");
+				}
+			}
+		});
+	}
+
+	/*
+        var hash = bcrypt.hashSync(password);
+        logger.log('info', "SignUp for new user: Firstname :: " + firstname+ " Lastname :: " + lastname + " email :: " + email+ " password :: " + hash +" contact :: " + contact +" location : " + location+" dateOfBirth :: " +dateOfBirth+" creditCardNumber : " + creditCardNumber);
+
+        var query = "INSERT INTO user (FirstName, LastName, EmailId, Password, Address, CreditCardNumber,DateOfBirth) VALUES ('" + firstname + "','" + lastname + "','" + email + "','" + hash + "','" + location + "','" + creditCardNumber + "','"+dateOfBirth+"')";
+        console.log("Query:: " + query);
+        logger.log('info', "Query:: " + query);
+    */
 
 	mongo.connect(mongoURL, function(){
 		console.log('Connected to mongo at: ' + mongoURL);
