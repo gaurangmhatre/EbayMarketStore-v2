@@ -370,6 +370,8 @@ exports.updateAuctionWinners = function(req,res){
 	* */
 
 
+
+
 }
 
 exports.updatePaymentDetailsForAuction= function(req,res){
@@ -381,36 +383,51 @@ exports.updatePaymentDetailsForAuction= function(req,res){
 	/* 1. update user, add the product to user collection
 	* 2. payed in statue true
 	* */
-	/*if(userId != undefined) {
-		var updatePaymentDetailsForAuctionQuery = "UPDATE `auctionwinners` SET `PaymentByCard` = " + creditCardNumber + ", `PaymentDate` = now(),`IsPaymentDone` = 1 WHERE `WinnerId` = " + userId + " and IsPaymentDone = 0;";
-		console.log("Query:: " + updatePaymentDetailsForAuctionQuery);
-		logger.log('info', 'Query:: ' + updatePaymentDetailsForAuctionQuery);
-		mysql.storeData(updatePaymentDetailsForAuctionQuery, function (err, result) {
-			//render on success
-			if (!err) {
-				console.log('Auction payment details updated for userId: ' + userId);
-				logger.log('info', 'Auction payment details updated for userId: ' + userId);
-				UpdateItemStatusToSold(ItemId);
-				json_responses = {
-					"statusCode": 200
+
+	if(userId != undefined) {
+		console.log('Connected to mongo at: ' + mongoURL);
+		var coll = mongo.collection('productsForAuction');
+		var collProducts= mongo.collection('productsForAuction');
+		var collUser= mongo.collection('users');
+		coll.find({"MaxBidder": userId, "IsAuctionOver":true}).toArray(function(err, results){
+			if (results) {
+				console.log("Successful got the products for auction sell.");
+				console.log("Email :  " + userId);
+				logger.log('info','Successful got the user auction  for email:' + userId);
+
+
+				for (var i = 0; i < results.length; i++) {
+					var id = new ObjectId(results[i]._id);
+
+					collProducts.update({_id: id,"IsPayed": false}, {
+							$set: {
+								"IsPayed": true
+							}},
+						{upsert:true}
+					)
+
+					collUser.update(
+						{EmailId: results[i].MaxBidder},
+						{$push: {AuctionsWonOnProducts: {$each: [results[0]]}}}
+					)
+
+
 				}
 
-				//res.send(json_responses);
+
+
+
+
+				json_responses = {"statusCode" : 200, "results": results};
 			}
 			else {
-				console.log('ERROR! Insertion not done');
-				logger.log('error', err);
-				throw err;
-
-				var json_responses = {"statusCode" : 401};
-				res.send(json_responses);
+				console.log('No data retrieved for email: ' + userId);
+				logger.log('info','No data retrieved for email' + userId);
+				json_responses = {"statusCode" : 401};
 			}
+			res.send(json_responses);
 		});
 	}
-    /!*else {
-        var json_responses = {"statusCode": 401};
-        res.send(json_responses);
-    }*!/*/
 
 }
 
@@ -449,7 +466,7 @@ exports.getAllWonAuctions= function(req,res){
 		console.log('Connected to mongo at: ' + mongoURL);
 		var coll = mongo.collection('productsForAuction');
 
-		coll.find({"MaxBidder": userId, "IsAuctionOver":true}).toArray(function(err, results){
+		coll.find({"MaxBidder": userId, "IsAuctionOver":true, "IsPayed":false}).toArray(function(err, results){
 			if (results) {
 				console.log("Successful got the products for direct sell.");
 				console.log("Email :  " + userId);
