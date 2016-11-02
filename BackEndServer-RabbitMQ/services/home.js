@@ -61,7 +61,6 @@ function handle_aftersignup_request(msg, callback){
 
     if(email!='') {
         //check if email already exists
-
         mongo.connect(mongoURL, function(){
             console.log('Connected to mongo at: ' + mongoURL);
             var coll = mongo.collection('users');
@@ -87,10 +86,25 @@ function handle_aftersignup_request(msg, callback){
                 }
             });
         });
-
     }
 }
 
+function handle_signin_request(msg, callback){
+    var res = {};
+    console.log("In handle checksignin request:"+ msg.EmailId +" Password : "+ msg.Password);
+    console.log('Connected to mongo at: ' + mongoURL);
+    mongo.connect(mongoURL, function() {
+        var coll = mongo.collection('users');
+
+        coll.findOne({'EmailId': msg.EmailId, 'Password': msg.Password}, function (error, user) {
+            console.log("Signin: user.FirstName" + user.FirstName);
+            callback(error, user);
+        });
+    });
+}
+
+
+exports.handle_signin_request = handle_signin_request;
 
 exports.handle_checksignup_request = handle_checksignup_request;
 
