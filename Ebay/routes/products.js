@@ -45,8 +45,6 @@ exports.getAllProducts = function(req,res){
 				res.send(json_responses);
 			});
 		});
-
-
 	}
 	else {
 		var json_responses = {"statusCode": 401};

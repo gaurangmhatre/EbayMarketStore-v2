@@ -103,7 +103,7 @@ function handle_allAuctionProductHistory_request(msg, callback){
         console.log('Connected to mongo at: ' + mongoURL);
         var coll = mongo.collection('users');
 
-        coll.find({"EmailId": userId},{"EmailId":1,"AuctionsWonOnProducts":1,"_id":0}).toArray(function(err, results){
+        coll.find({"EmailId": email},{"EmailId":1,"AuctionsWonOnProducts":1,"_id":0}).toArray(function(err, results){
             if (results) {
                 console.log("Successful got the products for Auctions sell.");
                 console.log("Email :  " + email);
@@ -165,7 +165,7 @@ function handle_allUserBiddingActivity_request(msg, callback){
         console.log('Connected to mongo at: ' + mongoURL);
         var coll = mongo.collection('users');
 
-        coll.find({"EmailId": userId},{"EmailId":1,"BidPlacedOnProducts":1,"_id":0}).toArray(function(err, results){
+        coll.find({"EmailId": email},{"EmailId":1,"BidPlacedOnProducts":1,"_id":0}).toArray(function(err, results){
             if (results) {
                 console.log("Successful got the products for bidding.");
                 console.log("Email :  " + email);
