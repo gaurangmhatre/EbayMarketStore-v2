@@ -75,7 +75,42 @@ function handle_allProductsForAuction_request(msg, callback){
     }
 }
 
+function handle_userAddToCart_request(msg, callback){
+    var res = {};
+    console.log("In handle allUserBiddingActivity request:"+ msg.email);
+    var email = msg.email;
+
+    if(email!='') {
+        //check if email already exists
+
+        console.log('Connected to mongo at: ' + mongoURL);
+
+		var coll = mongo.collection('UserCart');
+
+			coll.insert({"ItemId":msg.ItemId, "userEmail":msg.userEmail,"QtyInCart": msg.QtyInCart ,"ItemName":msg.ItemName, "ItemDescription":msg.ItemDescription,"Price":msg.Price,"QtyAvailable":msg.QtyAvailable,"DateAdded":msg.DateAdded,"Seller":msg.Seller}), function (err, results) {
+				if (results) {
+					console.log("Successful updated the cart.");
+					console.log("Email :  " + msg.userEmail);
+					logger.log('info', 'Successful updated the cart email:' + msg.userEmail);
+					json_responses = {"statusCode": 200, "results": results};
+				}
+				else {
+					console.log('No data retrieved for email: ' + msg.userEmail);
+					logger.log('info', 'No data retrieved for email' + msg.userEmail);
+					json_responses = {"statusCode": 401};
+				}
+				res.json_responses= json_responses;
+				callback(err,res)
+			}
+
+
+	}
+}
+
+
+
 
 exports.handle_allProducts_request = handle_allProducts_request;
 exports.handle_allProductsForAuction_request = handle_allProductsForAuction_request;
+exports.handle_userAddToCart_request = handle_userAddToCart_request;
 

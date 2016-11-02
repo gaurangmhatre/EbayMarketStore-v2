@@ -161,39 +161,31 @@ exports.getAllProductsInCart = function(req,res){
 exports.removeItemFromCart = function(req,res){
 	console.log("Inside removeItemFromCart for user: "+req.session.userid);
 	
-	var userId = req.session.userid;
+	var emailId = req.session.userid;
 	var item = req.param("item");
-	
-	if(userId != undefined) {
-		mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('UserCart');
+	var msg_payload= {"emailId":emailId,"itemName":item.ItemName};
 
-			console.log('Connected to inside remove method');
-			var itemid = item.ItemId;
-			var itemName = item.ItemName;
-			//coll.remove({ItemId:itemid}
 
-			coll.remove({ItemName:itemName}
-			),function(err, results){
-				if (results) {
-					console.log("Successful removed item from cart.");
-					console.log("Email :  " + userId);
-					logger.log('info','Successful removed item from cart.:' + userId);
+	if(emailId != undefined) {
 
-					json_responses = {"statusCode" : 200, "results": results};
+		mq_client.make_request('removeItemFromCart_queue',msg_payload, function(err,results){
+
+			console.log(results.statusCode);
+			if(err){
+				throw err;
+			}
+			else			{
+				if(results.statusCode == 200){
+					console.log("removed ite from the cart.");
+					res.send(results.json_responses);
 				}
 				else {
-					console.log('No data retrieved for email: ' + userId);
-					logger.log('info','No data retrieved for email' + userId);
-					json_responses = {"statusCode" : 401};
+					console.log("Error! removing item from cart.");
+					res.send({"statusCode" : 401});
 				}
-				res.send(json_responses);
-			};
+			}
 		});
-
 	}
-
 };
 
 exports.buyItemsInCart = function(req,res){

@@ -106,31 +106,32 @@ exports.userAddToCart = function(req,res){
 	var QtyAvailable = Product.Qty
 	var DateAdded = Product.DateAdded
 	var Seller = Product.Seller
+	
+	Product.Qty="1";
 
+	var msg_payload = {"ItemId":ItemId, "userEmail":UserId ,"QtyInCart": QtyInCart ,"ItemName":ItemName, "ItemDescription":ItemDescription,"Price":Price,"QtyAvailable":QtyAvailable,"DateAdded":DateAdded,"Seller":Seller};
 
 	console.log("Add to cart for: "+UserId+" itemId: "+Product._id+" Qty:"+QtyInCart );
 	logger.log('info', "Add to cart for: "+UserId+" itemId: "+Product._id+" Qty:"+QtyInCart);
 
-	Product.Qty="1";
+
 
 	if(UserId != undefined ) {
-		mongo.connect(mongoURL, function () {
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('UserCart');
-
-			coll.insert({"ItemId":ItemId, "userEmail":UserId ,"QtyInCart": QtyInCart ,"ItemName":ItemName, "ItemDescription":ItemDescription,"Price":Price,"QtyAvailable":QtyAvailable,"DateAdded":DateAdded,"Seller":Seller}), function (err, results) {
-				if (results) {
-					console.log("Successful updated the cart.");
-					console.log("Email :  " + UserId);
-					logger.log('info', 'Successful updated the cart email:' + UserId);
-					json_responses = {"statusCode": 200, "results": results};
+		mq_client.make_request('userAddToCart_queue',msg_payload, function(err,results){
+			console.log(results.json_responses.statusCode);
+			if(err){
+				throw err;
+			}
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got user cart data  products.");
+					res.send(results.json_responses);
 				}
 				else {
-					console.log('No data retrieved for email: ' + UserId);
-					logger.log('info', 'No data retrieved for email' + UserId);
-					json_responses = {"statusCode": 401};
+					console.log("No products in cart.");
+					res.send({"statusCode" : 401});
 				}
-				res.send(json_responses);
 			}
 		})
 	}

@@ -184,13 +184,44 @@ function handle_allUserBiddingActivity_request(msg, callback){
     }
 }
 
+function handle_removeItemFromCart_request(msg, callback){
+    var res = {};
+    console.log("In handle removeItemFromCart request:"+ msg.emailId +" Itemname: " +msg.itemName);
+    var emailId = msg.emailId;
+    var itemName = msg.itemName;
+    if(emailId!='') {
+        //check if email already exists
+
+        console.log('Connected to mongo at: ' + mongoURL);
+        var coll = mongo.collection('UserCart');
+
+        coll.remove({'ItemName':itemName, "userEmail": emailId}
+        ),function(err, results){
+            if (results) {
+                console.log("Successful removed item from cart.");
+                console.log("Email :  " + emailId);
+                logger.log('info','Successful removed item from cart.:' + emailId);
+
+                json_responses = {"statusCode" : 200, "results": results};
+            }
+            else {
+                console.log('No data retrieved for email: ' + emailId);
+                logger.log('info','No data retrieved for email' + emailId);
+                json_responses = {"statusCode" : 401};
+            }
+            res.json_responses = json_responses;
+            callback(err,res);
+        };
+    }
+}
+
 
 exports.handle_accountDetails_request = handle_accountDetails_request;
 exports.handle_allUserDirectBuyingActivities_request = handle_allUserDirectBuyingActivities_request;
 exports.handle_allAuctionProductHistory_request = handle_allAuctionProductHistory_request;
 exports.handle_allSoldProducts_request = handle_allSoldProducts_request;
 exports.handle_allUserBiddingActivity_request = handle_allUserBiddingActivity_request;
-
+exports.handle_removeItemFromCart_request = handle_removeItemFromCart_request
 
 
 
