@@ -5,6 +5,8 @@ var ObjectId = require('mongodb').ObjectId;
 var mongo = require('./mongo.js');
 var mongoURL = "mongodb://localhost:27017/ebay";
 
+var mq_client = require('../rpc/client');
+
 var logger = new (winston.Logger)({
 	transports: [
 		new (winston.transports.Console)(),
@@ -22,29 +24,33 @@ exports.getAllProducts = function(req,res){
 	console.log("userId: "+req.session.userid);
 
 	var email = req.session.userid;
-
+	var msg_payload = {"email":email};
 	if(email != undefined ) {
 
-		mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('ProductsForDirectSell');
+		if(email != undefined) {
+			mq_client.make_request('allProducts_queue',msg_payload, function(err,results){
 
-			coll.find({Qty:{ $gt: 0 }}).toArray(function(err, results){
-				if (results) {
-					console.log("Successful got the products for direct sell.");
-					console.log("Email :  " + email);
-					logger.log('info','Successful got the user data  for email:' + email);
-
-					json_responses = {"statusCode" : 200, "results": results};
+				console.log(results.json_responses.statusCode);
+				if(err){
+					throw err;
 				}
-				else {
-					console.log('No data retrieved for email: ' + email);
-					logger.log('info','No data retrieved for email' + email);
-					json_responses = {"statusCode" : 401};
+				else
+				{
+					if(results.json_responses.statusCode == 200){
+						console.log("Got user Products data for direct sell products");
+						res.send(results.json_responses);
+					}
+					else {
+						console.log("No products data for direct sell products");
+						res.send({"statusCode" : 401});
+					}
 				}
-				res.send(json_responses);
 			});
-		});
+		}
+		else {
+			//var json_responses = {"statusCode": 401};
+			res.send({"statusCode": 401});
+		}
 	}
 	else {
 		var json_responses = {"statusCode": 401};

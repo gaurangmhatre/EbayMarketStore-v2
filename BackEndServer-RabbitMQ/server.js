@@ -5,6 +5,7 @@ var amqp = require('amqp')
 var login = require('./services/login')
 var home = require('./services/home')
 var userProfile = require('./services/userProfile');
+var products = require('./services/products');
 var cnn = amqp.createConnection({host:'127.0.0.1'});
 
 cnn.on('ready', function(){
@@ -142,6 +143,25 @@ cnn.on('ready', function(){
 			util.log("Message: "+JSON.stringify(message));
 			util.log("DeliveryInfo: "+JSON.stringify(deliveryInfo));
 			userProfile.handle_allUserBiddingActivity_request(message, function(err,res){
+
+				//return index sent
+				cnn.publish(m.replyTo, res, {
+					contentType:'application/json',
+					contentEncoding:'utf-8',
+					correlationId:m.correlationId
+				});
+			});
+		});
+	});
+
+
+	console.log("listening on allProducts_queue");
+	cnn.queue('allProducts_queue', function(q){
+		q.subscribe(function(message, headers, deliveryInfo, m){
+			util.log(util.format( deliveryInfo.routingKey, message));
+			util.log("Message: "+JSON.stringify(message));
+			util.log("DeliveryInfo: "+JSON.stringify(deliveryInfo));
+			products.handle_allProducts_request(message, function(err,res){
 
 				//return index sent
 				cnn.publish(m.replyTo, res, {
