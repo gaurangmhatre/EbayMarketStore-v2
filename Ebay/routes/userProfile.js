@@ -3,6 +3,9 @@ var winston = require('winston');
 var ObjectId = require('mongodb').ObjectId;
 
 var mongo = require('./mongo.js');
+
+var mq_client = require('../rpc/client');
+
 var mongoURL = "mongodb://localhost:27017/ebay";
 
 var logger = new (winston.Logger)({
@@ -37,9 +40,9 @@ exports.getUserAccountDetails = function(req,res){
 	console.log("userId: "+req.session.userid);
 	
 	var email = req.session.userid;
-	
+	var msg_payload = {"email":email};
 	if(email != undefined ) {
-		mongo.connect(mongoURL, function(){
+		/*mongo.connect(mongoURL, function(){
 			console.log('Connected to mongo at: ' + mongoURL);
 			var coll = mongo.collection('users');
 			coll.findOne({EmailId: email}, function(err, results){
@@ -66,10 +69,29 @@ exports.getUserAccountDetails = function(req,res){
 				res.send(json_responses);
 			});
 		});
+*/
+		mq_client.make_request('accountDetails_queue',msg_payload, function(err,results){
+
+			console.log(results.statusCode);
+			if(err){
+				throw err;
+			}
+			else
+			{
+				if(results.statusCode == 200){
+					console.log("valid Login");
+					res.send(results.json_responses);
+				}
+				else {
+					console.log("Invalid Login");
+					res.send({"statusCode" : 401});
+				}
+			}
+		});
 	}
 	else {
-		var json_responses = {"statusCode": 401};
-		res.send(json_responses);
+		//var json_responses = {"statusCode": 401};
+		res.send({"statusCode": 401});
 	}
 };
 
@@ -488,32 +510,39 @@ exports.getAllWonAuctions= function(req,res){
 	 }*/
 }
 
+
+
 //History
 exports.getAllUserDirectBuyingActivities= function(req,res){
 	console.log("inside getAllUserDirectBuyingActivities for user: "+req.session.userid);
 
 	var userId = req.session.userid;
-
+	var msg_payload = {"email":userId};
 	if(userId != undefined) {
-		console.log('Connected to mongo at: ' + mongoURL);
-		var coll = mongo.collection('users');
+		mq_client.make_request('allUserDirectBuyingActivities_queue',msg_payload, function(err,results){
 
-		coll.find({"EmailId": userId},{"EmailId":1,"PurchasedProducts":1,"_id":0}).toArray(function(err, results){
-			if (results) {
-				console.log("Successful got the products for direct sell.");
-				console.log("Email :  " + userId);
-				logger.log('info','Successful got the user data  for email:' + userId);
-
-				json_responses = {"statusCode" : 200, "results": results};
+			console.log(results.json_responses.statusCode);
+			if(err){
+				throw err;
 			}
-			else {
-				console.log('No data retrieved for email: ' + userId);
-				logger.log('info','No data retrieved for email' + userId);
-				json_responses = {"statusCode" : 401};
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got user Products data for direct sell products");
+					res.send(results.json_responses);
+				}
+				else {
+					console.log("No products data for direct sell products");
+					res.send({"statusCode" : 401});
+				}
 			}
-			res.send(json_responses);
 		});
 	}
+	else {
+		//var json_responses = {"statusCode": 401};
+		res.send({"statusCode": 401});
+	}
+	
 	/*else {
 	 var json_responses = {"statusCode": 401};
 	 res.send(json_responses);
@@ -524,31 +553,36 @@ exports.getAllUserDirectBuyingActivities= function(req,res){
 exports.getAllAuctionProductHistory= function(req,res){
 	console.log("Inside getAllAuctionProductHistory method.")
 	var userId = req.session.userid;
-
+	var msg_payload = {"email":userId};
+	
 	if(userId != undefined) {
 		console.log('Connected to mongo at: ' + mongoURL);
 		var coll = mongo.collection('users');
 
-		coll.find({"EmailId": userId},{"EmailId":1,"AuctionsWonOnProducts":1,"_id":0}).toArray(function(err, results){
-			if (results) {
-				console.log("Successful got the products for direct sell.");
-				console.log("Email :  " + userId);
-				logger.log('info','Successful got the user data  for email:' + userId);
+		mq_client.make_request('allAuctionProductHistory_queue',msg_payload, function(err,results){
 
-				json_responses = {"statusCode" : 200, "results": results};
+			console.log(results.json_responses.statusCode);
+			if(err){
+				throw err;
 			}
-			else {
-				console.log('No data retrieved for email: ' + userId);
-				logger.log('info','No data retrieved for email' + userId);
-				json_responses = {"statusCode" : 401};
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got user Products data for auction products");
+					res.send(results.json_responses);
+				}
+				else {
+					console.log("No auction products data.");
+					res.send({"statusCode" : 401});
+				}
 			}
-			res.send(json_responses);
 		});
+		
 	}
-    /*else {
-        var json_responses = {"statusCode": 401};
-        res.send(json_responses);
-    }*/
+	else {
+		//var json_responses = {"statusCode": 401};
+		res.send({"statusCode": 401});
+	}
 
 }
 
@@ -558,25 +592,28 @@ exports.getAllSoldProducts= function(req,res){
 	console.log("inside getAllSoldProducts for user: "+req.session.userid);
 
 	var userId = req.session.userid;
-	
+	var msg_payload = {"email":userId};
+
 	if(userId != undefined) {
 		console.log('Connected to mongo at: ' + mongoURL);
-		var coll = mongo.collection('users');
-		
-		coll.find({"EmailId": userId},{"EmailId":1,"SoldProducts":1,"_id":0}).toArray(function(err, results){
-			if (results) {
-				console.log("Successful got the products for direct sell.");
-				console.log("Email :  " + userId);
-				logger.log('info','Successful got the user data  for email:' + userId);
 
-				json_responses = {"statusCode" : 200, "results": results};
+		mq_client.make_request('allSoldProducts_queue',msg_payload, function(err,results){
+
+			console.log(results.json_responses.statusCode);
+			if(err){
+				throw err;
 			}
-			else {
-				console.log('No data retrieved for email: ' + userId);
-				logger.log('info','No data retrieved for email' + userId);
-				json_responses = {"statusCode" : 401};
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got user Products data for sold products");
+					res.send(results.json_responses);
+				}
+				else {
+					console.log("No auction sold products data.");
+					res.send({"statusCode" : 401});
+				}
 			}
-			res.send(json_responses);
 		});
 	}
 	/*else {
@@ -590,56 +627,29 @@ exports.getAllUserBiddingActivity = function(req,res){
 	console.log("inside getAllUserBiddingActivity for user: "+req.session.userid);
 
 	var userId = req.session.userid;
-
+	var msg_payload = {"email":userId};
 	if(userId != undefined) {
-		/*var getAllUserBiddingActivityQuery = "select  i.ItemName, i.ItemDescription, i.Price, b.BidAmount,b.BidTime  from bidderList as b left join item as i  on b.ItemId=i.ItemId where BidderId = "+userId+" order by BidTime desc";
-		console.log("Query:: " + getAllUserBiddingActivityQuery);
-		logger.log('info','Query:: ' + getAllUserBiddingActivityQuery);
-		mysql.fetchData(function(err,results) {
-			if(err) {
-				logger.log('error',err);
+		console.log('Connected to mongo at: ' + mongoURL);
 
+		mq_client.make_request('allUserBiddingActivity_queue',msg_payload, function(err,results){
+
+			console.log(results.json_responses.statusCode);
+			if(err){
 				throw err;
 			}
-			else {
-				if(results.length > 0) {
-					console.log("Successful got the sold products.");
-					logger.log('info','Successful got the sold products for userId:: ' + userId);
-					json_responses = results;
-				}
-				else{
-					console.log("Invalid string.");
-					json_responses = {"statusCode" : 401};
-				}
-				res.send(json_responses);
-			}
-
-		},getAllUserBiddingActivityQuery);*/
-
-		mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
-
-			coll.find({"EmailId": userId},{"EmailId":1,"BidPlacedOnProducts":1,"_id":0}).toArray(function(err, results){
-				if (results) {
-					console.log("Successful got the products for direct sell.");
-					console.log("Email :  " + userId);
-					logger.log('info','Successful got the user data  for email:' + userId);
-
-					json_responses = {"statusCode" : 200, "results": results};
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got user Products data for Bidding products");
+					res.send(results.json_responses);
 				}
 				else {
-					console.log('No data retrieved for email: ' + userId);
-					logger.log('info','No data retrieved for email' + userId);
-					json_responses = {"statusCode" : 401};
+					console.log("No auction Bidding products data.");
+					res.send({"statusCode" : 401});
 				}
-				res.send(json_responses);
-			});
+			}
 		});
+
 	}
-	/*else {
-	 var json_responses = {"statusCode": 401};
-	 res.send(json_responses);
-	 }*/
 }
 

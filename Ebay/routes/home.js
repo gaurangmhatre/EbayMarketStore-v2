@@ -128,25 +128,26 @@ exports.afterSignup = function(req,res){// load new user data in database
 
 	if(email!='') {
 		//check if email already exists
-		mq_client.make_request('handle_aftersignup_request',msg_payload, function(err,results){
+		mq_client.make_request('aftersignup_queue',msg_payload, function(err,results){
 
-			console.log(results);
+			console.log("Hello "+ results);
 			if(err){
 				throw err;
 			}
 			else
 			{
 				if(results.statusCode == 200){
-					console.log("valid Login");
+					console.log("Valid Login.");
 					res.send("true");
 				}
 				else {
-					console.log("Invalid Login");
+					console.log("Invalid Login.");
 					res.send("false");
 				}
 			}
 		});
 	}
+
 
 	/*
         var hash = bcrypt.hashSync(password);
@@ -156,33 +157,6 @@ exports.afterSignup = function(req,res){// load new user data in database
         console.log("Query:: " + query);
         logger.log('info', "Query:: " + query);
     */
-
-	mongo.connect(mongoURL, function(){
-		console.log('Connected to mongo at: ' + mongoURL);
-		var coll = mongo.collection('users');
-		coll.insert({FirstName:firstname
-						,LastName:lastname
-						,EmailId: email
-						,Password:password
-						,Contact:contact
-						,Address: Address
-						,CreditCardDetails: creditCardNumber
-						,DateOfBirth:dateOfBirth
-			},function(err, user){
-			if (!err) {
-				console.log('Valid SignUp!');
-				logger.log('info', "Valid Sign up for: "+ email);
-				res.send("true");
-
-			} else {
-				console.log('Invalid SingUp!');
-				logger.log('info', "Invalid Sign up for: "+ email);
-				res.send("false");
-			}
-
-			res.send("true");
-		});
-	});
 
 };
 

@@ -36,10 +36,10 @@ function handle_checksignup_request(msg, callback){
                     res.statusCode= 401; //email not found.
                 }
 
-
+                callback(null, res);
             });
         });
-        callback(null, res);
+
     }
 }
 
@@ -48,7 +48,7 @@ function handle_aftersignup_request(msg, callback){
     var res = {};
     console.log("In handle aftersignup request:"+ msg.email);
 
-   // var email = msg.email;
+    // var email = msg.email;
 
     var firstname = msg.firstname;
     var lastname = msg.lastname;
@@ -78,15 +78,16 @@ function handle_aftersignup_request(msg, callback){
                     console.log('SignUp success!');
                     logger.log('info', "Valid Sign up for: "+ email);
                     res.statusCode=200;
-
+                    callback(null, res);
                 } else {
                     console.log('Failed SignUp!');
                     logger.log('info', "Invalid Sign up for: "+ email);
-                    res.statusCode=200;
+                    res.statusCode=401;
+                    callback(null, res);
                 }
             });
         });
-        callback(null, res);
+
     }
 }
 
@@ -94,3 +95,5 @@ function handle_aftersignup_request(msg, callback){
 exports.handle_checksignup_request = handle_checksignup_request;
 
 exports.handle_aftersignup_request = handle_aftersignup_request;
+
+

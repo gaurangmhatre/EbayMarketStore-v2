@@ -49,6 +49,9 @@ signup.controller('signup', function($scope, $filter, $http) {
 		console.log("in doSignUp");
 		console.log("before calling http :: email :: " + $scope.email);
 
+		
+
+
 		$http({
 			method : "POST",
 			url : '/aftersignup',
@@ -61,16 +64,13 @@ signup.controller('signup', function($scope, $filter, $http) {
 				"contact" : $scope.contact,
 				"creditCardNumber": $scope.creditCardNumber,
 				"dateOfBirth": $filter('date')($scope.dateOfBirth, 'yyyy-MM-dd')
-				
+
 			}
-		}).success(function(isSignUp,data) {
+		}).success(function(data) {
 			console.log("in success of doSignUp");
 			//checking the response data for statusCode
-			if (data.statusCode == 401) {
-				$scope.invalid_login = false;
-				$scope.unexpected_error = true;
-			}
-			else if(isSignUp == "true") {
+
+			if(data == "true") {
 				console.log("isSignUp=true");
 				//window.location.assign('/');
 				window.location.assign("/signin");
@@ -78,16 +78,17 @@ signup.controller('signup', function($scope, $filter, $http) {
 				$scope.emailExists = null;
 				$scope.$apply();
 			}
-			else if(isSignUp == "false") {
+			else if(data == "false") {
 				console.log("isSignUp=false");
 				$scope.isEmailExist = true;
 				$scope.emailExists = "Email You entered Exist.";
 				$scope.$apply();
 			}
 		}).error(function(error) {
-			
+
 			console.log("in error doSignUp :: ");
 			console.log(error);
 		});
+
 	};
 });

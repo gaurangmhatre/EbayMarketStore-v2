@@ -15,7 +15,7 @@ userProfile.controller('activityController', function($scope,$http) {
 
 
 
-		$http({
+		/*$http({
 			method: "POST",
 			url: '/getAllUserDirectBuyingActivities',
 			data: {}
@@ -44,7 +44,7 @@ userProfile.controller('activityController', function($scope,$http) {
 			$scope.disableBuyActivity= true;
 		});
 
-
+*/
 		$http({
 			method: "POST",
 			url: '/getAllSoldProducts',
@@ -74,7 +74,7 @@ userProfile.controller('activityController', function($scope,$http) {
 			$scope.disableSellActivity= true;
 		});
 
-
+/*
 		$http({
 			method: "POST",
 			url: '/getAllUserBiddingActivity',
@@ -127,6 +127,6 @@ userProfile.controller('activityController', function($scope,$http) {
 			$window.alert("unexpected_error");
 
 			$scope.disableAuctionWonActivity= true;
-		});
+		});*/
 	}
 });
