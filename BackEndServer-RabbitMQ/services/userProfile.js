@@ -184,6 +184,35 @@ function handle_allUserBiddingActivity_request(msg, callback){
     }
 }
 
+function handle_getItemFromCart_request(msg, callback){
+    var res = {};
+    console.log("In handle getItemFromCart request:"+ msg.email );
+    var emailId = msg.email;
+    //var itemName = msg.itemName;
+    if(emailId!='') {
+        //check if email already exists
+
+        console.log('Connected to mongo at: ' + mongoURL);
+        var coll = mongo.collection('UserCart');
+
+        coll.find({"userEmail": emailId}).toArray(function(err, results){
+            if (results) {
+                console.log("Successful got the products for sold sell.");
+                console.log("Email :  " + emailId);
+                logger.log('info','Successful got the user sold data  for email:' + emailId);
+                json_responses = {"statusCode" : 200, "results": results};
+            }
+            else {
+                console.log('No data retrieved for email: ' + emailId);
+                logger.log('info','No products data retrieved for email' + emailId);
+                json_responses = {"statusCode" : 401};
+            }
+            res.json_responses= json_responses;
+            callback(err,res);
+        });
+    }
+}
+
 function handle_removeItemFromCart_request(msg, callback){
     var res = {};
     console.log("In handle removeItemFromCart request:"+ msg.emailId +" Itemname: " +msg.itemName);
@@ -221,6 +250,8 @@ exports.handle_allUserDirectBuyingActivities_request = handle_allUserDirectBuyin
 exports.handle_allAuctionProductHistory_request = handle_allAuctionProductHistory_request;
 exports.handle_allSoldProducts_request = handle_allSoldProducts_request;
 exports.handle_allUserBiddingActivity_request = handle_allUserBiddingActivity_request;
+
+exports.handle_getItemFromCart_request = handle_getItemFromCart_request
 exports.handle_removeItemFromCart_request = handle_removeItemFromCart_request
 
 

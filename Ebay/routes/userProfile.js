@@ -98,58 +98,30 @@ exports.getUserAccountDetails = function(req,res){
 exports.getAllProductsInCart = function(req,res){
 	console.log("inside get All Products from cart for user: "+req.session.userid);
 	
-	var userId = req.session.userid;
-	var flag=false;
-	var j=0;
-	if(userId != undefined) {
-		mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('UserCart');
+	var email = req.session.userid;
 
-			coll.find({"userEmail": userId}).toArray(function(err, results){
-				if (results) {
+	var msg_payload = {"email":email};
+	if(email != undefined) {
 
-					console.log("Successful got the products for direct sell.");
-					console.log("Email :  " + userId);
-					logger.log('info','Successful got the user data  for email:' + userId);
+		mq_client.make_request('getItemFromCart_queue',msg_payload, function(err,results){
 
-                    var cartArray= [];
-
-                    /*for (var i = 0; i < results.length; i++) {
-						var ItemId= results[i].ItemId
-                        var coll2 = mongo.collection('ProductsForDirectSell');
-                        //coll2.find({_id: ItemId}).toArray(function(err, result) {
-						coll2.find({ItemName: results[i].ItemName}).toArray(function(err, result) {
-                            if (result) {
-                                    cartArray.push(result);
-									flag=true;
-									j=i;
-                            }
-
-							if(j==results.length)
-							{
-								json_responses = {"statusCode": 200, "results": cartArray};
-								res.send(json_responses);
-							}
-
-                        });
-
-                    }*/
-                    console.log(" cart item: "+results);
-					json_responses = {"statusCode": 200, "results": results};
+			console.log(results.statusCode);
+			if(err){
+				throw err;
+			}
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got art Items.");
+					res.send(results.json_responses);
 				}
 				else {
-					console.log('No data retrieved for email: ' + userId);
-					logger.log('info','No data retrieved for email' + userId);
-					json_responses = {"statusCode" : 401};
+					console.log("No items in cart");
+					res.send({"statusCode" : 401});
 				}
-			});
+			}
+		});
 
-		});/*
-		if(flag==true) {
-
-		}*/
-		res.send(json_responses);
 	}
 };
 
