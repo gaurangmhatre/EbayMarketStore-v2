@@ -8,7 +8,7 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 		//console.log("userId:: " + $scope.userId)
 	
 		
-		/*$http({
+		$http({
 			method : "POST",
 			url : '/getAllProductsForAuction',//change the method to get 10 items at a time.
 			data : {
@@ -20,14 +20,14 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 			console.log(data);
 			
 			$scope.allProductsForAuction = data.results;
-			/!*
+			/*
 			$scope.allProducts = [];
 
 			angular.forEach(data.results, function(result, key){
 				angular.forEach(result.ProductsForAuction, function(product, key) {
 					$scope.allProductsForAuction.push(product);
 				});
-			});*!/
+			});*/
 			
 			//set all variables.
 				 
@@ -38,8 +38,7 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 			$scope.invalid_login = true;
 			$window.alert("unexpected_error");
 		});
-		*/
-		
+
 		
 		$scope.addBidOnProduct = function(Item,BidAmount,MaxBidAmount,Price) {
 			

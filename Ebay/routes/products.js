@@ -61,59 +61,28 @@ exports.getAllProducts = function(req,res){
 exports.getAllProductsForAuction = function(req,res){
 	console.log("In getAllProductsForAuction.");
 
-		/*var getAllProductForAuctionQuery = "select i.ItemId, i.ItemName,i.ItemDescription,i.ItemTypeId,i.SellerId,i.Price,i.Qty,i.DateAdded,i.AuctionEndDate,i.IsBidItem,i.sold, max(b.BidAmount) as MaxBidAmount from item as i left join bidderList as b on i.ItemId = b.ItemId  where i.IsBidItem=1 and i.AuctionEndDate > NOW() group by i.ItemId, i.ItemName,i.ItemDescription,i.ItemTypeId,i.SellerId,i.Price,i.Qty,i.DateAdded,i.AuctionEndDate,i.IsBidItem, i.sold";
-		console.log("Query:: " + getAllProductForAuctionQuery);
-		logger.log('info', "Query:: " + getAllProductForAuctionQuery);
-		mysql.fetchData(function(err,results) {
-			if(err) {
-				throw err;
-				logger.log('error', err);
-			}
-			else {
-				if(results.length > 0) {
-					logger.log('info', 'Results are loaded for user (auction): '+req.session.userid);
-					json_responses = {"statusCode" : 200,
-											"results" : results};
-						
-						res.send(json_responses);
-				}
-				else {
-					console.log("No items to display");
-					logger.log('info', 'No results are loaded for user (auction): '+req.session.userid);
-					json_responses = {"statusCode" : 401};
-					res.send(json_responses);
-				}
-			}
-		}, getAllProductForAuctionQuery );*/
-
 	console.log("userId: "+req.session.userid);
 
 	var email = req.session.userid;
-
+	var msg_payload = {"email":email};
 	if(email != undefined ) {
-
-		mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('productsForAuction');
-
-			coll.find({}).toArray(function(err, results){
-				if (results) {
-					console.log("Successful got the products for Auction sell.");
-					console.log("Email :  " + email);
-					logger.log('info','Successful got the user data  for email:' + email);
-
-					json_responses = {"statusCode" : 200, "results": results};
+		mq_client.make_request('allProductsForAuction_queue',msg_payload, function(err,results){
+			console.log(results.json_responses.statusCode);
+			if(err){
+				throw err;
+			}
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got user Products data for auction products.");
+					res.send(results.json_responses);
 				}
 				else {
-					console.log('No data retrieved for email: ' + email);
-					logger.log('info','No data retrieved for email' + email);
-					json_responses = {"statusCode" : 401};
+					console.log("No products data for auction products.");
+					res.send({"statusCode" : 401});
 				}
-				res.send(json_responses);
-			});
+			}
 		});
-
-
 	}
 	else {
 		var json_responses = {"statusCode": 401};
