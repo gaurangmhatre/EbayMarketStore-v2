@@ -163,86 +163,28 @@ exports.removeItemFromCart = function(req,res){
 exports.buyItemsInCart = function(req,res){
 
 	var userId = req.session.userid;
-
+	var msg_payload= {"userId":userId};
 	var creditCardNumber = req.param("CreditCardNumber");
 
 	if(userId != undefined) {
 
-        mongo.connect(mongoURL, function () {
-            console.log('Connected to mongo at: ' + mongoURL);
-            var coll = mongo.collection('UserCart');
-			var callUser = mongo.collection('users');
-			var callProducts = mongo.collection('ProductsForDirectSell');
-            coll.find({"userEmail": userId}).toArray(function (err, results) {
-                if (results) {
-                    console.log("Successful got the products in cart.");
-                    console.log("Email :  " + userId);
-                    logger.log('info', 'Successful got the the products in cart for:' + userId);
+		mq_client.make_request('buyItemsInCart_queue',msg_payload, function(err,results){
 
-                    for (var i = 0; i < results.length; i++) {
-                        //push items to PurchasedProducts
-
-						//update seller
-						callUser.update(
-                            {EmailId: results[i].Seller},
-                            {$push: {SoldProducts: {$each: [results[0]]}}}
-                        )
-
-						//update buyer
-						callUser.update(
-							{EmailId: userId},
-							{$push: {PurchasedProducts: {$each: [results[0]]}}}
-						)
-
-						//update Qty
-						var id = new ObjectId(results[i].ItemId);
-						callProducts.update({_id:id}, {
-							$set: {
-								"Qty": results[i].QtyAvailable - results[i].QtyInCart
-							}
-						})
-
-						// remove from cart
-						coll.remove({ItemName:results[i].ItemName}
-						)
-
-                        /*coll.find(
-                         { PurchasedProducts:{ItemName: results[0].UserCart[i].ItemName}},
-                         { $inc: { PurchasedProducts: { Qty:-1 } } }
-                         )*/
-                       /* coll.find({'ProductsForDirectSell.ItemName': results[0].UserCart[i].ItemName}).toArray(function (err, userWithProduct) {
-                            if (userWithProduct) {
-                                console.log("Successful got all the seller with product in list.");
-                                console.log("Email :  " + userId);
-
-                                //update qty
-                                for (var i = 0; i < userWithProduct[0].UserCart.length; i++) {
-                                    if (results[0].UserCart[i].ItemName == userWithProduct[0].UserCart.ItemName) {
-                                        userWithProduct[0].UserCart.Qty = parseInt(userWithProduct[0].UserCart.Qty) - 1;
-                                    }
-                                }
-
-
-                                //remove items from cart
-
-                            }
-                        });
-
-
-                        coll.update(
-                            {EmailId: userId},
-                            {$inc: {quantity: -2, "metrics.orders": 1}}
-                        )*/
-                    }
-                }
-                else {
-                    console.log('No data retrieved for email: ' + userId);
-                    logger.log('info', 'No data retrieved for email' + userId);
-                    json_responses = {"statusCode": 401};
-                }
-                res.send(json_responses);
-            });
-        })
+			console.log(results.statusCode);
+			if(err){
+				throw err;
+			}
+			else{
+				if(results.statusCode == 200){
+					console.log("Success while buying items in cart.");
+					res.send(results.json_responses);
+				}
+				else {
+					console.log("Error! while buying items from cart.");
+					res.send({"statusCode" : 401});
+				}
+			}
+		});
     }
 
 }
@@ -447,25 +389,26 @@ exports.getAllWonAuctions= function(req,res){
 	console.log("inside getAllWonAuctions for user: "+req.session.userid);
 
 	var userId = req.session.userid;
-
+	var msg_payload = {"userId":userId};
 	if(userId != undefined) {
-		console.log('Connected to mongo at: ' + mongoURL);
-		var coll = mongo.collection('productsForAuction');
 
-		coll.find({"MaxBidder": userId, "IsAuctionOver":true, "IsPayed":false}).toArray(function(err, results){
-			if (results) {
-				console.log("Successful got the products for direct sell.");
-				console.log("Email :  " + userId);
-				logger.log('info','Successful got the user data  for email:' + userId);
+		mq_client.make_request('getAllWonAuctions_queue',msg_payload, function(err,results){
 
-				json_responses = {"statusCode" : 200, "results": results};
+			console.log(results.json_responses.statusCode);
+			if(err){
+				throw err;
 			}
-			else {
-				console.log('No data retrieved for email: ' + userId);
-				logger.log('info','No data retrieved for email' + userId);
-				json_responses = {"statusCode" : 401};
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got user Products won!");
+					res.send(results.json_responses);
+				}
+				else {
+					console.log("No products won. Start Bidding.");
+					res.send({"statusCode" : 401});
+				}
 			}
-			res.send(json_responses);
 		});
 	}
 	/*else {

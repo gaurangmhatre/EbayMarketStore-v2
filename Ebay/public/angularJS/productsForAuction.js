@@ -44,7 +44,7 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 			
 			console.log("Selected ItemId : "+Item.ItemId);
 			if(Price<BidAmount) {
-				if(MaxBidAmount<BidAmount) {
+				if((MaxBidAmount==undefined) ||  MaxBidAmount<BidAmount ) {
 					alert("Bid placed!!");
 					$http({
 						method: "POST",

@@ -244,7 +244,128 @@ function handle_removeItemFromCart_request(msg, callback){
     }
 }
 
+function handle_buyItemsInCart_request(msg, callback){
+    var res = {};
+    console.log("In handle buyItemsInCart request:"+ msg.userId );
 
+    var userId = msg.userId;
+
+    if(userId!='') {
+        //check if email already exists
+
+        mongo.connect(mongoURL, function () {
+            console.log('Connected to mongo at: ' + mongoURL);
+            var coll = mongo.collection('UserCart');
+            var callUser = mongo.collection('users');
+            var callProducts = mongo.collection('ProductsForDirectSell');
+            coll.find({"userEmail": userId}).toArray(function (err, results) {
+                if (results) {
+                    console.log("Successful got the products in cart.");
+                    console.log("Email :  " + userId);
+                    logger.log('info', 'Successful got the the products in cart for:' + userId);
+
+                    for (var i = 0; i < results.length; i++) {
+                        //push items to PurchasedProducts
+
+                        //update seller
+                        callUser.update(
+                            {EmailId: results[i].Seller},
+                            {$push: {SoldProducts: {$each: [results[0]]}}}
+                        )
+
+                        //update buyer
+                        callUser.update(
+                            {EmailId: userId},
+                            {$push: {PurchasedProducts: {$each: [results[0]]}}}
+                        )
+
+                        //update Qty
+                        var id = new ObjectId(results[i].ItemId);
+                        callProducts.update({_id:id}, {
+                            $set: {
+                                "Qty": results[i].QtyAvailable - results[i].QtyInCart
+                            }
+                        })
+
+                        // remove from cart
+                        coll.remove({ItemName:results[i].ItemName}
+                        )
+
+                        /*coll.find(
+                         { PurchasedProducts:{ItemName: results[0].UserCart[i].ItemName}},
+                         { $inc: { PurchasedProducts: { Qty:-1 } } }
+                         )*/
+                        /* coll.find({'ProductsForDirectSell.ItemName': results[0].UserCart[i].ItemName}).toArray(function (err, userWithProduct) {
+                         if (userWithProduct) {
+                         console.log("Successful got all the seller with product in list.");
+                         console.log("Email :  " + userId);
+
+                         //update qty
+                         for (var i = 0; i < userWithProduct[0].UserCart.length; i++) {
+                         if (results[0].UserCart[i].ItemName == userWithProduct[0].UserCart.ItemName) {
+                         userWithProduct[0].UserCart.Qty = parseInt(userWithProduct[0].UserCart.Qty) - 1;
+                         }
+                         }
+
+
+                         //remove items from cart
+
+                         }
+                         });
+
+
+                         coll.update(
+                         {EmailId: userId},
+                         {$inc: {quantity: -2, "metrics.orders": 1}}
+                         )*/
+                    }
+                }
+                else {
+                    console.log('No data retrieved for email: ' + userId);
+                    logger.log('info', 'No data retrieved for email' + userId);
+                    json_responses = {"statusCode": 401};
+                }
+                res.json_responses = json_responses;
+                callback(err,res);
+            });
+        })
+    }
+}
+
+function handle_getAllWonAuctions_request(msg,callback){
+    var res = {};
+    console.log("In handle getAllWonAuctions request:"+ msg.userId );
+
+    var userId = msg.userId;
+
+    if(userId!='') {
+        //check if email already exists
+
+        mongo.connect(mongoURL, function () {
+            console.log('Connected to mongo at: ' + mongoURL);
+            var coll = mongo.collection('productsForAuction');
+
+            coll.find({"MaxBidder": userId, "IsAuctionOver":true, "IsPayed":false}).toArray(function(err, results){
+                if (results) {
+                    console.log("Successful got the products for direct sell.");
+                    console.log("Email :  " + userId);
+                    logger.log('info','Successful got the user data  for email:' + userId);
+
+                    json_responses = {"statusCode" : 200, "results": results};
+                }
+                else {
+                    console.log('No data retrieved for email: ' + userId);
+                    logger.log('info','No data retrieved for email' + userId);
+                    json_responses = {"statusCode" : 401};
+                }
+                res.json_responses = json_responses;
+                callback(err,res);
+            });
+        })
+    }
+}
+exports.handle_getAllWonAuctions_request=handle_getAllWonAuctions_request;
+exports.handle_buyItemsInCart_request = handle_buyItemsInCart_request
 exports.handle_accountDetails_request = handle_accountDetails_request;
 exports.handle_allUserDirectBuyingActivities_request = handle_allUserDirectBuyingActivities_request;
 exports.handle_allAuctionProductHistory_request = handle_allAuctionProductHistory_request;

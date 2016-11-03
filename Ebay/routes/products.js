@@ -156,47 +156,24 @@ exports.addBidOnProduct = function(req,res){
 	var BidAmount = req.param("BidAmount");
 	var UserId =  req.session.userid;
 
+	var msg_payload = {"Item":Item, "BidAmount":BidAmount ,"UserId": UserId};
 
 	if(UserId != undefined ) {
-		mongo.connect(mongoURL, function () {
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
-			var collForAction = mongo.collection('productsForAuction');
-			coll.update({"EmailId": UserId},{$push: {BidPlacedOnProducts: Item }}), function (err, results) {
-				if (results) {
-					console.log("Successfully added bid to user table.");
-					console.log("Email :  " + UserId);
-					logger.log('info', 'Successfully added bid to user table for email:' + UserId);
-
-					json_responses = {"statusCode": 200};
-				}
-				else {
-					console.log('No data retrieved for email: ' + UserId);
-					logger.log('info', 'No data retrieved for email' + UserId);
-					json_responses = {"statusCode": 401};
-				}
-				//res.send(json_responses);
+		mq_client.make_request('addBidOnProduct_queue',msg_payload, function(err,results){
+			console.log(results.json_responses.statusCode);
+			if(err){
+				throw err;
 			}
-			var id = new ObjectId(Item._id);
-			collForAction.update({_id:id}, {
-				$set: {
-					"MaxBidder": UserId,
-					"MaxBidAmount":BidAmount
-				}
-			}), function (err, results) {
-				if (results) {
-					console.log("Successfully added bid to products table.");
-					console.log("Email :  " + UserId);
-					logger.log('info', 'Successfully added bid to products table for email:' + UserId);
-
-					json_responses = {"statusCode": 200};
+			else
+			{
+				if(results.json_responses.statusCode == 200){
+					console.log("Got user cart data  products.");
+					res.send(results.json_responses);
 				}
 				else {
-					console.log('No data retrieved for email: ' + UserId);
-					logger.log('info', 'No data retrieved for email' + UserId);
-					json_responses = {"statusCode": 401};
+					console.log("No products in cart.");
+					res.send({"statusCode" : 401});
 				}
-				res.send(json_responses);
 			}
 		})
 	}
@@ -254,55 +231,76 @@ exports.addProduct = function(req,res){
 	var CurrentDate = new Date();
 	var AuctionEndDate = new Date();
 
+	var msg_payload= {"ItemName":ItemName,"ItemDescription":ItemDescription,"Price":Price,"Qty":Qty,"DateAdded":CurrentDate,"Seller":userId};
+
+	var msg_payloadForAuction= {"ItemName":ItemName,"ItemDescription":ItemDescription,"Price":Price,"Qty":Qty,"DateAdded":CurrentDate,"Seller":userId , "AuctionEndDate":AuctionEndDate};
+
 	AuctionEndDate.setDate(AuctionEndDate.getDate()+4);
 
 	console.log(AuctionEndDate);
 
 	if(userId != undefined ) {
 		if (IsBidItem == 0) {
-			mongo.connect(mongoURL, function () {
-				console.log('Connected to mongo at: ' + mongoURL);
-				var coll = mongo.collection('ProductsForDirectSell');
+			/*mongo.connect(mongoURL, function () {
+			 console.log('Connected to mongo at: ' + mongoURL);
+			 var coll = mongo.collection('ProductsForDirectSell');
 
-				coll.insert({ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: CurrentDate, Seller : userId }
-				), function (err, result) {
-						if (result) {
-							console.log("Successful Added the products for direct sell.");
-							console.log("Email :  " + userId);
-							logger.log('info', 'Successful Added the user data  for email:' + userId);
+			 coll.insert({ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:Qty, DateAdded: CurrentDate, Seller : userId }
+			 ), function (err, result) {
+			 if (result) {
+			 console.log("Successful Added the products for direct sell.");
+			 console.log("Email :  " + userId);
+			 logger.log('info', 'Successful Added the user data  for email:' + userId);
 
-							json_responses = {"statusCode": 200, "results": result};
-						}
-						else {
-							console.log('No data added for email: ' + userId);
-							logger.log('info', 'No data added for email' + userId);
-							json_responses = {"statusCode": 401};
-						}
-						res.send(json_responses);
+			 json_responses = {"statusCode": 200, "results": result};
+			 }
+			 else {
+			 console.log('No data added for email: ' + userId);
+			 logger.log('info', 'No data added for email' + userId);
+			 json_responses = {"statusCode": 401};
+			 }
+			 res.send(json_responses);
+			 }
+			 });*/
+			mq_client.make_request('addProductForDirectSell_queue',msg_payload, function(err,results){
+				console.log(results.json_responses.statusCode);
+				if(err){
+					throw err;
+				}
+				else
+				{
+					if(results.json_responses.statusCode == 200){
+						console.log("Product added.");
+						res.send(results.json_responses);
 					}
-			});
+					else {
+						console.log("No products added.");
+						res.send({"statusCode" : 401});
+					}
+				}
+			})
+
 		}
 		else if(IsBidItem == 1) {
 			mongo.connect(mongoURL, function () {
 				console.log('Inside productsForAuction Connected to mongo at: ' + mongoURL);
-				var coll = mongo.collection('productsForAuction');
-
-				coll.insert({ItemName: ItemName, ItemDescription: ItemDescription, Price: Price, Qty:1, DateAdded: CurrentDate, AuctionEndDate:AuctionEndDate, Seller: userId}
-				),function (err, result) {
-						if (result) {
-							console.log("Successful Added the products for direct sell.");
-							console.log("Email :  " + userId);
-							logger.log('info', 'Successful Added the user data  for email:' + userId);
-
-							json_responses = {"statusCode": 200, "results": result};
+				mq_client.make_request('addProductForAuction_queue',msg_payloadForAuction, function(err,results){
+					console.log(results.json_responses.statusCode);
+					if(err){
+						throw err;
+					}
+					else
+					{
+						if(results.json_responses.statusCode == 200){
+							console.log("Product added for auction.");
+							res.send(results.json_responses);
 						}
 						else {
-							console.log('No data added for email: ' + userId);
-							logger.log('info', 'No data added for email' + userId);
-							json_responses = {"statusCode": 401};
+							console.log("No products added to auction.");
+							res.send({"statusCode" : 401});
 						}
-						res.send(json_responses);
-				};
+					}
+				})
 			});
 		}
 	}
