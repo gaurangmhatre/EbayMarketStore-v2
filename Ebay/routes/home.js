@@ -44,35 +44,6 @@ exports.signin = function(req,res){
 	res.render('signin',{validationMessage:'Empty Message'});
 };
 
-/*exports.checksignup = function(req,res){ //check if email ID is valid or not
-	console.log("In check signup .");
-
-	//request parameters
-	var email = req.param("email");
-
-	if(email!='') {
-		//check if email already exists
-
-		mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
-			coll.findOne({EmailId: email}, function(err, user){
-				if (user) {
-					console.log("Email exists!");
-					logger.log('error', "Email exists for id: "+ email);
-					json_responses = {"statusCode" : 200};
-
-				} else {
-					console.log("Email Doesn't exists");
-					logger.log('info', "New mail for id: "+ email);
-					json_responses = {"statusCode" : 401}; //email not found.
-				}
-
-				res.send(json_responses);
-			});
-		});
-	}
-};*/
 exports.checksignup = function(req,res){ //check if email ID is valid or not
 	console.log("In check signup .");
 
@@ -114,7 +85,8 @@ exports.afterSignup = function(req,res){// load new user data in database
 	var Address = req.param("location");
 	var creditCardNumber = req.param("creditCardNumber");
 	var dateOfBirth = req.param("dateOfBirth");
-	
+
+	password = bcrypt.hashSync(password);
 	console.log("firstname :: " + firstname);
 	console.log("lastname :: " + lastname);
 	console.log("email :: " + email);
@@ -162,76 +134,35 @@ exports.afterSignup = function(req,res){// load new user data in database
 
 function getAllAuctionResults(){
 	console.log("In GetAllAuction method.");
-	var currentDate=  new Date();
 
-	mongo.connect(mongoURL, function() {
+	var msg_payload= {};
+	if(true){
+			mq_client.make_request('getAllAuctionResults_queue',msg_payload, function(err,results){
 
-		var coll= mongo.collection('productsForAuction');
-		var callProducts= mongo.collection('productsForAuction');
+				console.log("Hello "+ results);
+				if(err){
+					throw err;
+				}
+				else
+				{
+					if(results.statusCode == 200){
+						console.log("Valid Login.");
+						res.send("true");
+					}
+					else {
+						console.log("Invalid Login.");
+						res.send("false");
+					}
+				}
+			});
 
-		coll.find({AuctionEndDate: {$lt: currentDate}, IsAuctionOver: false}).toArray(function (err, results) {
-			for (var i = 0; i < results.length; i++) {
-				/*Auction
-				 * 1. set IsAuctionOver flag to true
-				 * 2. set Payed  flag in products to false
-				 * */
-
-				var id = new ObjectId(results[i]._id);
-				callProducts.update({_id: id}, {
-					$set: {
-						"IsAuctionOver": true,
-						"IsPayed": false
-					}},
-					{upsert:true}
-				)
-			}
-
-		})
-	});
+			console.log('AllAuctionResultsUpdated');
+	}
+	else{
+		console.log('ERROR! No auction results Updated.');
+		throw err;
+	}
 }
-
-function itemIsSold(ItemId) {
-
-	console.log("Inside itemIsSold flag.");
-		
-		var updateSoldItemFlagQuery = "update Item set sold = 1 where ItemId = "+ItemId;
-
-		console.log("Query:: " + updateSoldItemFlagQuery);
-		logger.log('info', "Query:: " + updateSoldItemFlagQuery);
-
-		mysql.storeData(updateSoldItemFlagQuery, function(err, result){
-			//render on success
-			if(!err){
-				console.log('Sold flag updated for Item:'+ItemId);
-			}
-			else{
-				console.log('ERROR! Insertion not done for auction results.');
-				throw err;
-			}
-		});
-};
-
-function addAuctionWinnerToTheList(ItemId) {
-
-	console.log("Inside addAuctionWinnerToTheList method.");
-	
-	var addAuctionWinnerToTheListQuery = "INSERT INTO `ebay`.`auctionwinners`(`WinnerId`,`ItemId`,`IsPaymentDone`)(select b.BidderId, b.ItemId, 0 as IsPaymentDone from bidderlist as b where ItemId = "+ItemId+" and b.BidAmount = (	select max(b.BidAmount)	from bidderlist as b left join item as i	on b.ItemId=i.ItemId	where i.IsBidItem =1  and i.AuctionEndDate < now() and i.ItemId="+ItemId+"));";
-
-	console.log("Query:: " + addAuctionWinnerToTheListQuery);
-	logger.log('info', "Query:: " + addAuctionWinnerToTheListQuery);
-	mysql.storeData(addAuctionWinnerToTheListQuery, function(err, result){
-		//render on success
-		if(!err){
-			console.log('New bidder successfully added to winners list! for Item:'+ItemId);
-			logger.log('info', 'New bidder successfully added to winners list! for Item:'+ItemId);
-		}
-		else{
-			console.log('ERROR! Insertion not done for auction results.');
-			logger.log('error','ERROR! Insertion not done for auction results.');
-			throw err;
-		}
-	});
-};
 
 exports.signout = function(req,res){
 
@@ -250,24 +181,23 @@ exports.signout = function(req,res){
 function addLastLogin(userId) {
 
 	//failing because of userID is EmailId now
-	/*
-	var addItemToSoldTableQuery = "UPDATE user	SET LastLoggedIn = NOW() WHERE UserId = "+userId+";";
-	console.log("Query:: " + addItemToSoldTableQuery);
-	logger.log('info',"Query:: " + addItemToSoldTableQuery);
+	var msg_payload = {"userId":userId};
+	mq_client.make_request('addLastLogin_queue',msg_payload, function(err,results){
 
-	mysql.storeData(addItemToSoldTableQuery, function(err, result){
-		//render on success
-		if(!err){
-			console.log('last Login for userId = '+userId+" is added.");
-			logger.log('info','last Login for userId = '+userId+' is added.');
-		}
-		else{
-			console.log('ERROR! while adding current login time.');
-			logger.log('Error','ERROR! while adding current login time.'+err);
+		console.log("Hello "+ results);
+		if(err){
 			throw err;
 		}
+		else
+		{
+			if(results.statusCode == 200){
+				console.log("Valid Login.");
+				res.send("true");
+			}
+			else {
+				console.log("Invalid Login.");
+				res.send("false");
+			}
+		}
 	});
-*/
-
-
 }

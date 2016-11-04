@@ -59,6 +59,8 @@ function handle_aftersignup_request(msg, callback){
     var creditCardNumber = msg.creditCardNumber;
     var dateOfBirth = msg.dateOfBirth;
 
+    
+
     if(email!='') {
         //check if email already exists
         mongo.connect(mongoURL, function(){
@@ -93,21 +95,83 @@ function handle_signin_request(msg, callback){
     var res = {};
     console.log("In handle checksignin request:"+ msg.EmailId +" Password : "+ msg.Password);
     console.log('Connected to mongo at: ' + mongoURL);
+    console.log( msg.EmailId +" = "+msg.Password);
     mongo.connect(mongoURL, function() {
         var coll = mongo.collection('users');
 
-        coll.findOne({'EmailId': msg.EmailId, 'Password': msg.Password}, function (error, user) {
-            console.log("Signin: user.FirstName" + user.FirstName);
+        coll.findOne({'EmailId': msg.EmailId}, function (error, user) {
+            //console.log("Signin: user.FirstName" + user.FirstName);
             callback(error, user);
         });
     });
 }
 
+function handle_getAllAuctionResults_request(msg, callback){
+    var res = {};
+    console.log("In handle handle_getAllAuctionResults_request request.");
+    console.log('Connected to mongo at: ' + mongoURL);
+    
+    var currentDate = new Date();
+    
+    mongo.connect(mongoURL, function() {
+        /*var coll = mongo.collection('users');
 
+        coll.findOne({'EmailId': msg.EmailId, 'Password': msg.Password}, function (error, user) {
+            console.log("Signin: user.FirstName" + user.FirstName);
+            callback(error, user);
+        });*/
+        var coll= mongo.collection('productsForAuction');
+        var callProducts= mongo.collection('productsForAuction');
+
+        coll.find({AuctionEndDate: {$lt: currentDate}, IsAuctionOver: false}).toArray(function (err, results) {
+            for (var i = 0; i < results.length; i++) {
+                /*Auction
+                 * 1. set IsAuctionOver flag to true
+                 * 2. set Payed  flag in products to false
+                 * */
+
+                var id = new ObjectId(results[i]._id);
+                callProducts.update({_id: id}, {
+                        $set: {
+                            "IsAuctionOver": true,
+                            "IsPayed": false
+                        }},
+                    {upsert:true}
+                )
+            }
+
+        })
+    });
+}
+
+function handle_addLastLogin_request(msg,callback){
+    var res = {};
+    console.log("In handle handle_addLastLogin_request request.");
+    console.log('Connected to mongo at: ' + mongoURL);
+
+    var currentDate = new Date();
+
+    mongo.connect(mongoURL, function() {
+        /*var coll = mongo.collection('users');
+
+         coll.findOne({'EmailId': msg.EmailId, 'Password': msg.Password}, function (error, user) {
+         console.log("Signin: user.FirstName" + user.FirstName);
+         callback(error, user);
+         });*/
+        var coll= mongo.collection('users');
+
+        coll.update(
+            {EmailId: msg.userId},
+            {$push: {LastLoggedIn: currentDate}}
+        )
+
+    });
+}
+
+exports.handle_addLastLogin_request = handle_addLastLogin_request;
+exports.handle_getAllAuctionResults_request= handle_getAllAuctionResults_request;
 exports.handle_signin_request = handle_signin_request;
-
 exports.handle_checksignup_request = handle_checksignup_request;
-
 exports.handle_aftersignup_request = handle_aftersignup_request;
 
 

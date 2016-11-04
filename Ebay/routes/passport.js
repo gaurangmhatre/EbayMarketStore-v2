@@ -6,6 +6,7 @@ var LocalStrategy = require("passport-local").Strategy;
 
 var mongo = require('./mongo');
 var mq_client = require('../rpc/client');
+var bcrypt = require('./bCrypt.js');
 //var MongoClient = require('mongodb').MongoClient;
 
 var loginDatabase = "mongodb://localhost:27017/ebay";
@@ -51,11 +52,11 @@ module.exports = function(passport) {
                         return done(null, false);
                     }
 
-                    if(user.Password != password) {
+                    //if(user.Password != password) {
+                    if(!bcrypt.compareSync(password, user.Password)) {
                         done(null, false);
                     }
 
-                    connection.close();
                     console.log("Inside Passport: "+user.EmailId);
                     done(null, user);
 

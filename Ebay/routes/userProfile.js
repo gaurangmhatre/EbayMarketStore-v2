@@ -42,34 +42,6 @@ exports.getUserAccountDetails = function(req,res){
 	var email = req.session.userid;
 	var msg_payload = {"email":email};
 	if(email != undefined ) {
-		/*mongo.connect(mongoURL, function(){
-			console.log('Connected to mongo at: ' + mongoURL);
-			var coll = mongo.collection('users');
-			coll.findOne({EmailId: email}, function(err, results){
-				if (results) {
-					console.log("Successful got the user data");
-					console.log("Email :  " + email);
-					logger.log('info','Successful got the user data  for email:' + email);
-
-					json_responses = {"FirstName": results.FirstName
-						,"LastName": results.LastName
-						,"EmailId":results.EmailId
-						,"Address":results.Address
-						,"CreditCardNumber":results.CreditCardDetails
-						,"DateOfBirth":results.DateOfBirth
-						,"LastLoggedIn":results.LastLoggedIn
-					};
-				}
-				else {
-					console.log('No data retrieved for email: ' + email);
-					logger.log('info','No data retrieved for email' + email);
-					json_responses = {"statusCode" : 401};
-				}
-
-				res.send(json_responses);
-			});
-		});
-*/
 		mq_client.make_request('accountDetails_queue',msg_payload, function(err,results){
 
 			console.log(results.statusCode);
@@ -130,6 +102,7 @@ exports.getAllProductsInCart = function(req,res){
 *db.users.remove({'EmailId':"tim@gmail.com",'UserCart.ItemName':"Moto G 3",'UserCart.Qty':"3"},{ 'UserCart.ItemName':1  })
 *
 * */
+
 exports.removeItemFromCart = function(req,res){
 	console.log("Inside removeItemFromCart for user: "+req.session.userid);
 	
@@ -202,6 +175,7 @@ exports.buyItemsInCart = function(req,res){
 		});
 }*/
 
+/*
 function AddItemToSoldTable(Item) {
 
 	console.log("Inside addItemTOSoldTable method.")
@@ -226,8 +200,9 @@ function AddItemToSoldTable(Item) {
 		}
 	});
 }
+*/
 
-function updateItemQty(ItemId) {
+/*function updateItemQty(ItemId) {
 
 	console.log("Inside updateItemQty method.")
 		
@@ -251,16 +226,11 @@ function updateItemQty(ItemId) {
 			throw err;
 		}
 	});
-}
+}*/
 
-function removingItemFromCart(userId,ItemId) {
+/*function removingItemFromCart(userId,ItemId) {
 
-	console.log("Inside removeItem from cart method.")
-		
-/*	var RemovingItemFromCartQuery = "delete from usercart where UserId ="+userId+" and ItemId = "+ItemId+";";
-	console.log("Query:: " + RemovingItemFromCartQuery);
-	logger.log('info','Query:: ' + RemovingItemFromCartQuery);*/
-
+	console.log("Inside removeItem from cart method.");
 	mysql.deleteData(RemovingItemFromCartQuery, function(err,results) {
 		if(err) {
 				console.log("Error in deleteData");
@@ -288,7 +258,7 @@ function removingItemFromCart(userId,ItemId) {
 			}
 		}
 	});
-}
+}*/
 
 //Select BidderId,max(BidAmount) from bidderList where ItemId = (select (ItemId) from Item where  IsBidItem =1  and AuctionEndDate < now());
 exports.updateAuctionWinners = function(req,res){
@@ -398,8 +368,7 @@ exports.getAllWonAuctions= function(req,res){
 			if(err){
 				throw err;
 			}
-			else
-			{
+			else{
 				if(results.json_responses.statusCode == 200){
 					console.log("Got user Products won!");
 					res.send(results.json_responses);
@@ -416,8 +385,6 @@ exports.getAllWonAuctions= function(req,res){
 	 res.send(json_responses);
 	 }*/
 }
-
-
 
 //History
 exports.getAllUserDirectBuyingActivities= function(req,res){
