@@ -5,6 +5,8 @@ var signup = angular.module('signup',[]);
 signup.controller('signup', function($scope, $filter, $http) {
 
 	//$scope.emailExists = "";
+	$scope.accountCreated = true;
+	$scope.NoEmailIdExists = true;
 	$scope.isEmailExist = false;
 	console.log("outside submit button");
 	$scope.submit = function() {
@@ -33,6 +35,7 @@ signup.controller('signup', function($scope, $filter, $http) {
 			else{
 				$scope.invalid_login = false;
 				$scope.unexpected_error = true;
+				$scope.NoEmailIdExists = false;
 			}
 		}).error(function(error) {
 			$scope.unexpected_error = false;
@@ -76,6 +79,8 @@ signup.controller('signup', function($scope, $filter, $http) {
 				window.location.assign("/signin");
 				$scope.isEmailExist = false;
 				$scope.emailExists = null;
+				$scope.NoEmailIdExists = true;
+				$scope.accountCreated = false;
 				$scope.$apply();
 			}
 			else if(data == "false") {

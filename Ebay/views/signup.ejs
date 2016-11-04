@@ -119,7 +119,15 @@
 			      <label for="CreditCardNumber">Credit Card Number</label>
 			      <input type="text" class="form-control" ng-model="creditCardNumber" placeholder="Enter 16-digit card number"/>
 			    </div>
-				
+
+				<div class="alert alert-success" ng-hide="accountCreated">
+					<strong>Success! Account is created.</strong>
+				</div>
+
+				<div class="alert alert-danger" ng-hide="NoEmailIdExists">
+					<strong>This EmailId Is already registered with us!</strong>
+				</div>
+
 				<!-- Submit Button -->
 				<button type="submit" class="btn btn-success btn-block">Sign up</button>
 
