@@ -3,7 +3,7 @@ var products = angular.module('products',[]);
 products.controller('products', function($scope, $filter, $http) {
 
 		$scope.unexpected_error = true;
-
+		$scope.ProductNotAdded = true;
 		console.log("inside products controller");
 	
 		//console.log("userId:: " + $scope.userId)
@@ -37,7 +37,7 @@ products.controller('products', function($scope, $filter, $http) {
 		});
 		
 		$scope.AddToCart = function(product) {
-			
+			$scope.ProductNotAdded = false;
 			console.log("Selected product : "+product.ItemName);
 			$http({
 				method : "POST",
@@ -62,7 +62,7 @@ products.controller('products', function($scope, $filter, $http) {
 		}
 
 		$scope.signout = function() {
-
+			$scope.ProductNotAdded = true;
 			console.log("inside signout method");
 			$http({
 				method : "POST",

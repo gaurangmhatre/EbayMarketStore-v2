@@ -61,5 +61,14 @@
 			    <div class="form-group">
 			    <button type="submit" class="btn btn-success btn-block" ng-click= payForWonItems(CreditCardNumber)>Buy The Items</button>
 				</div>
+
+        <div class="alert alert-danger" ng-hide="NoValidCreditCartNumber">
+            <strong>You must enter valid 16 digit Credit Card number!</strong>
+        </div>
+
+        <div class="alert alert-success" ng-hide="NoIemsBoughtSuccess">
+            <strong>Successs! Item bought.</strong>
+        </div>
+
     </div>
 </div>

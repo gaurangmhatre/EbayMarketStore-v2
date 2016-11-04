@@ -1,5 +1,4 @@
 
-
 <div class="container">
     <div class="well well-sm">
         <h2> <strong>Cart</strong></h2>
@@ -63,5 +62,13 @@
 			    <button type="submit" class="btn btn-success btn-block" ng-click= buyItemsInCart(CreditCardNumber,Address)>Place your order</button>
 				</div>
         </form>
+
+        <div class="alert alert-danger" ng-hide="NoValidCreditCartNumber">
+            <strong>You must enter valid 16 digit Credit Card number!</strong>
+        </div>
+
+        <div class="alert alert-success" ng-hide="NoIemsBoughtSuccess">
+            <strong>Successs! Item bought.</strong>
+        </div>
     </div>
 </div>

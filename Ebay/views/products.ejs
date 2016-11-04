@@ -54,14 +54,19 @@
 
 	<!--<a class="btn btn-success" ng-click= "signout()">sign Out</a>-->
 
+
 	<div class="container">
 
-		<img src="images/advertisement.jpg"  />
+		<img src="images/advertisement.jpg" class="well well-sm" width="1135"/>
 
 
 
 	    <div class="well well-sm">
 			<h2><strong>Buy Directly</strong></h2>
+
+			<div class="alert alert-success" ng-hide="ProductNotAdded">
+				<strong>Product Added Successfully to the cart!</strong>
+			</div>
 	    </div>
 	    
 	    <div id="products" class="row list-group">
@@ -106,6 +111,18 @@
 	            </span>List</a> <a href="#" id="grid" class="btn btn-default btn-sm"><span
 	                class="glyphicon glyphicon-th"></span>Grid</a>
 	        </div> -->
+
+			<div class="alert alert-success" ng-hide="NoBidPlaced">
+				<strong>Bid Placed Successfully!</strong>
+			</div>
+
+			<div class="alert alert-danger" ng-hide="NoMaxBidAmount">
+				<strong>Your bid amount should be more than max bid amount!</strong>
+			</div>
+
+			<div class="alert alert-danger" ng-hide="NoBidmoreThanProductCost">
+				<strong>Your bid amount should be more than product cost!</strong>
+			</div>
 	    </div>
 	    
 	    <div id="products" class="row list-group">

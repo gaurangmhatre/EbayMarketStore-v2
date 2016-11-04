@@ -55,7 +55,10 @@ function handle_allProductsForAuction_request(msg, callback){
         console.log('Connected to mongo at: ' + mongoURL);
         var coll = mongo.collection('productsForAuction');
 
-        coll.find({Qty:{ $gt: 0 }}).toArray(function(err, results){
+        var CurrentDate = new Date();
+
+
+        coll.find({Qty:{ $gt: 0 }, AuctionEndDate:{ $gt: CurrentDate }}).toArray(function(err, results){  //
             if (results) {
                 console.log("---Successful got the products for auction sell.");
                 console.log("Email :  " + email);
@@ -145,6 +148,10 @@ function handle_addProductForAuction_request(msg, callback){
         console.log("In handle addProductForAuction request:"+ msg.Seller);
         //var email = msg.email;
 
+    var CurrentDate = new Date();
+    var AuctionEndDate = new Date();
+    AuctionEndDate.setDate(AuctionEndDate.getDate()+4);
+
         if(msg.Seller!='') {
             //check if email already exists
             mongo.connect(mongoURL, function () {
@@ -153,7 +160,7 @@ function handle_addProductForAuction_request(msg, callback){
 
                 //{"ItemName":ItemName,"ItemDescription":ItemDescription,"Price":Price,"Qty":Qty,"DateAdded":CurrentDate,"Seller":userId , "AuctionEndDate":AuctionEndDate};
 
-                coll.insert({'ItemName': msg.ItemName, 'ItemDescription': msg.ItemDescription, 'Price': msg.Price, 'Qty':1, 'DateAdded': msg.DateAdded, 'Seller': msg.Seller, 'AuctionEndDate':msg.AuctionEndDate }
+                coll.insert({'ItemName': msg.ItemName, 'ItemDescription': msg.ItemDescription, 'Price': msg.Price, 'Qty':1, 'DateAdded': CurrentDate, 'Seller': msg.Seller, 'AuctionEndDate':AuctionEndDate,'IsAuctionOver': false}
                 ), function (err, result){
                     if (result) {
                         console.log("Successful Added the products for Auction sell.");

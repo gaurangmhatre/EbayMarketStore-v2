@@ -3,7 +3,8 @@ userProfile.controller('sellItemController', function($scope,$http) {
 	console.log("Inside sellItemController.");
 
 	$scope.IsBidItem=0;
-	
+	$scope.noProductadded = true;
+	$scope.noProductForAuctionAdded = true;
 	
 	$http({
 		method : "POST",
@@ -33,7 +34,15 @@ userProfile.controller('sellItemController', function($scope,$http) {
 	$scope.Addproduct = function(ItemId,BidAmount) {
 		
 		 var ItemTypeId = $("#typeSelect").val();
-		
+
+		if($scope.IsBidItem==1) {
+			$scope.noProductadded = true;
+			$scope.noProductForAuctionAdded = false;
+		}else{
+			$scope.noProductadded = false;
+			$scope.noProductForAuctionAdded = true;
+		}
+
 		$http({
 			method : "POST",
 			url : '/addProduct',
@@ -49,7 +58,8 @@ userProfile.controller('sellItemController', function($scope,$http) {
 			console.log("inside success");
 			console.log("data is ::");
 			console.log(data);
-		
+
+
 			window.location.assign("/products");
 			//set all variables.
 				 

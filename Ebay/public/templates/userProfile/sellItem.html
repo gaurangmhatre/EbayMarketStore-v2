@@ -1,5 +1,3 @@
-
-
 <div class="container">
     <div class="well well-sm">
 		<h2><strong>Sell Product</strong></h2>
@@ -58,9 +56,15 @@
 
 				
 				<input-data-list-dropdown choices="items" model="item"></input-data-list-dropdown>
-				
-			  
-				
+
+				<div class="alert alert-success" ng-hide="noProductadded">
+					<strong>Advertisement For Direct sell is Posted!</strong>
+				</div>
+
+
+				<div class="alert alert-success" ng-hide="noProductForAuctionAdded">
+					<strong>Advertisement For Auction is Posted!</strong>
+				</div>
 				<!-- Submit Button -->
 				<button type="submit" class="btn btn-info btn-block">Post Your Advertisement</button>
 					

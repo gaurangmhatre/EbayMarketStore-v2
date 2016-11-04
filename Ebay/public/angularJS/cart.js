@@ -11,6 +11,10 @@ userProfile.controller('cartController', function($scope,$http) {
 		$scope.TotalCostOfCart=0;
 		$scope.visibleTransactionDiv = false;
 		$scope.donotloadtemplate=true;
+
+		$scope.NoValidCreditCartNumber = true;
+		$scope.NoIemsBoughtSuccess = true;
+
 		//console.log("userId:: " + $scope.userId)
 	
 		
@@ -116,6 +120,8 @@ userProfile.controller('cartController', function($scope,$http) {
 		console.log("Inside place the order method.");
 
 		if(CreditCardNumber.length==16) {
+			$scope.NoValidCreditCartNumber = true;
+			$scope.NoIemsBoughtSuccess = false;
 			$http({
 				method: "POST",
 				url: '/buyItemsInCart',
@@ -141,7 +147,9 @@ userProfile.controller('cartController', function($scope,$http) {
 			});
 		}
 		else{
-			alert("You must enter valid 16 digit Credit Card number.");
+			//alert("You must enter valid 16 digit Credit Card number.");
+			$scope.NoValidCreditCartNumber = false;
+			$scope.NoIemsBoughtSuccess = true;
 		}
 	}
 });

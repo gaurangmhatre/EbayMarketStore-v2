@@ -6,7 +6,9 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 		console.log("inside productsForAuction controller");
 	
 		//console.log("userId:: " + $scope.userId)
-	
+		$scope.NoMaxBidAmount = true;
+		$scope.NoBidmoreThanProductCost = true;
+		$scope.NoBidPlaced  = true;
 		
 		$http({
 			method : "POST",
@@ -45,7 +47,10 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 			console.log("Selected ItemId : "+Item.ItemId);
 			if(Price<BidAmount) {
 				if((MaxBidAmount==undefined) ||  MaxBidAmount<BidAmount ) {
-					alert("Bid placed!!");
+					//alert("Bid placed!!");
+					$scope.NoBidPlaced  = false;
+					$scope.NoMaxBidAmount = true;
+					$scope.NoBidmoreThanProductCost = true;
 					$http({
 						method: "POST",
 						url: '/addBidOnProduct',//change the method to get 10 items at a time.
@@ -70,12 +75,17 @@ products.controller('productsForAuction', function($scope, $filter, $http) {
 					});
 				}
 				else{
-					alert("Your bid amount should be more than max bid amount.");
+					//alert("Your bid amount should be more than max bid amount.");
+					$scope.NoMaxBidAmount = false;
+					$scope.NoBidmoreThanProductCost = true;
+					$scope.NoBidPlaced  = true;
 				}
 			}
 			else{
-				alert("Your bid amount should be more than product cost.")
-
+				//alert("Your bid amount should be more than product cost.")
+				$scope.NoMaxBidAmount = true;
+				$scope.NoBidmoreThanProductCost = false;
+				$scope.NoBidPlaced  = true;
 			}
 			
 		}

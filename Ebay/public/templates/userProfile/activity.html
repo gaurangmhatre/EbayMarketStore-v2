@@ -15,7 +15,7 @@
                         <th>Quantity</th>
                         <th class="text-center">Price</th>
                         <th class="text-center">Total</th>
-                        <th class="text-center">Purchase date</th>
+                        <!--<th class="text-center">Purchase date</th>-->
                     </tr>
                 </thead>
                 <tbody>
@@ -26,18 +26,18 @@
                             <div class="media-body">
                                 <h4 class="media-heading"><a href="#">{{item.ItemName}}</a></h4>
                                 <h5 class="media-heading"> <a href="#">{{item.ItemDescription}}</a></h5>
-                                <span>Seller: </span><span class="text-success"><strong>{{item.FirstName}}</strong></span>
+                                <span>Seller: </span><span class="text-success"><strong>{{item.Seller}}</strong></span>
                             </div>
                         </div></td>
                         
                         <!-- <input type="email" class="form-control" id="exampleInputEmail1" value="3"> -->
-                        <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Qty}}</strong></td>
+                        <td class="col-sm-1 col-md-1 text-center"><strong>{{item.QtyInCart}}</strong></td>
                         
                         
                         <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Price}}</strong></td>
                         <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Price}}</strong></td>
                         
-                        <td class="col-sm-1 col-md-1" style="text-align: center"><strong>{{item.Solddate | date:'medium'}}</strong></td>
+                       <!-- <td class="col-sm-1 col-md-1" style="text-align: center"><strong>{{item.Solddate | date:'medium'}}</strong></td>-->
                     </tr>
                   
                 </tbody>
@@ -59,9 +59,9 @@
                     <tr>
                         <th>Product History</th>
                         <th>Quantity</th>
-                        <th class="text-center">Buyer</th>
+                        <!--<th class="text-center">Buyer</th>-->
                         <th class="text-center">Price</th>
-                        <th class="text-center">Sold date</th>
+                        <!--<th class="text-center">Sold date</th>-->
                     </tr>
                 </thead>
                 <tbody>
@@ -72,18 +72,18 @@
                             <div class="media-body">
                                 <h4 class="media-heading"><a href="#">{{item.ItemName}}</a></h4>
                                 <h5 class="media-heading"> by <a href="#">{{item.ItemDescription}}</a></h5>
-                                <span>Buyer: </span><span class="text-success"><strong>{{item.Buyer}}</strong></span>
+                                <!--<span>Buyer: </span><span class="text-success"><strong>{{item.Buyer}}</strong></span>-->
                             </div>
                         </div></td>
                         
                         <!-- <input type="email" class="form-control" id="exampleInputEmail1" value="3"> -->
-                        <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Qty}}</strong></td>
+                        <td class="col-sm-1 col-md-1 text-center"><strong>{{item.QtyInCart}}</strong></td>
                         
                         
-                        <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Buyer}}</strong></td>
+                        <!--<td class="col-sm-1 col-md-1 text-center"><strong>{{item.Buyer}}</strong></td>-->
                         <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Price}}</strong></td>
                         
-                        <td class="col-sm-1 col-md-1" style="text-align: center"><strong>{{item.SoldDate | date:'medium'}}</td></strong>
+                       <!-- <td class="col-sm-1 col-md-1" style="text-align: center"><strong>{{item.SoldDate | date:'medium'}}</td></strong>-->
                     </tr>
                   
                 </tbody>
@@ -106,8 +106,7 @@
                        <!--  <th>Quantity</th> -->
                         <th class="text-center">Bid Amount</th>
                         <th class="text-center">Base Price</th>
-                        
-                        <th class="text-center">BidTime</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -118,7 +117,7 @@
                             <div class="media-body">
                                 <h4 class="media-heading"><a href="#">{{item.ItemName}}</a></h4>
                                 <h5 class="media-heading"> by <a href="#">{{item.ItemDescription}}</a></h5>
-                                
+                                <span>Seller: </span><span class="text-success"><strong>{{item.Seller}}</strong></span>
                             </div>
                         </div></td>
                         
@@ -126,9 +125,9 @@
                         <!-- <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Qty}}</strong></td> -->
                         
                         
-                        <td class="col-sm-1 col-md-1 text-center"><strong>{{item.BidAmount}}</strong></td>
+                        <td class="col-sm-1 col-md-1 text-center"><strong>{{item.MaxBidAmount}}</strong></td>
                         <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Price}}</strong></td>
-                        <td class="col-sm-1 col-md-1 text-center"><strong>{{item.BidTime| date:'medium'}}</strong></td>
+                       <!-- <td class="col-sm-1 col-md-1 text-center"><strong>{{item.BidTime| date:'medium'}}</strong></td>-->
                         
                     </tr>
                   
@@ -150,9 +149,8 @@
                     <th>Product History</th>
                     <!--  <th>Quantity</th> -->
                     <th class="text-center">Base Price</th>
-                    <th class="text-center">Payment date</th>
+                    <th class="text-center">Auction end date</th>
 
-                    <th class="text-center"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -163,7 +161,7 @@
                             <div class="media-body">
                                 <h4 class="media-heading"><a href="#">{{item.ItemName}}</a></h4>
                                 <h5 class="media-heading"> by <a href="#">{{item.ItemDescription}}</a></h5>
-                                <span>Seller: </span><span class="text-success"><strong>{{item.SellerName}}</strong></span>
+                                <span>Seller: </span><span class="text-success"><strong>{{item.Seller}}</strong></span>
                             </div>
                         </div></td>
 
@@ -174,7 +172,7 @@
                     <!--<td class="col-sm-1 col-md-1 text-center"><strong>{{item.BidAmount}}</strong></td>
                     -->
                     <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Price}}</strong></td>
-                    <td class="col-sm-1 col-md-1 text-center"><strong>{{item.Paymentdate| date:'medium'}}</strong></td>
+                    <td class="col-sm-1 col-md-1 text-center"><strong>{{item.AuctionEndDate| date:'medium'}}</strong></td>
 
                 </tr>
 

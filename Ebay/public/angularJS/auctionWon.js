@@ -7,6 +7,9 @@ userProfile.controller('auctionWonController',function($scope, $filter,$http){
 	initialize();
 	
 	function initialize(){
+		$scope.NoValidCreditCartNumber = true;
+		$scope.NoIemsBoughtSuccess = true;
+		
 		$scope.TotalCostOfItems=0;
 		$scope.visibleTransactionDiv = false;
 		$scope.donotloadtemplate=true;
@@ -93,7 +96,8 @@ userProfile.controller('auctionWonController',function($scope, $filter,$http){
 	$scope.payForWonItems = function(CreditCardNumber){
 		console.log("Inside Pay for won Items.")
 		if(CreditCardNumber.length==16) {
-
+			$scope.NoValidCreditCartNumber = true;
+			$scope.NoIemsBoughtSuccess = false;
 			$http({
 				method: "POST",
 				url: '/updatePaymentDetailsForAuction',
@@ -119,7 +123,9 @@ userProfile.controller('auctionWonController',function($scope, $filter,$http){
 			});
 		}
 		else{
-			alert("You must enter valid 16 digit Credit Card number.");
+			//alert("You must enter valid 16 digit Credit Card number.");
+			$scope.NoValidCreditCartNumber = false;
+			$scope.NoIemsBoughtSuccess = true;
 		}
 	}
 });
