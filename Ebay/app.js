@@ -16,7 +16,7 @@ var express = require('express')
 var passport = require('passport');
 require('./routes/passport')(passport);
 
-var session = require('client-sessions');
+//var session = require('client-sessions');
 var expressSessions = require("express-session");
 
 var mongoStore = require("connect-mongo/es5")(expressSessions);
@@ -193,7 +193,7 @@ app.post('/getAllProducts',products.getAllProducts);
 app.post('/getAllProductsForAuction',products.getAllProductsForAuction);
 app.post('/userAddToCart',products.userAddToCart);
 app.post('/addBidOnProduct',products.addBidOnProduct);
-app.post('/getItemType',products.getItemType);
+/*app.post('/getItemType',products.getItemType);*/
 app.post('/addProduct',products.addProduct)
 
 
@@ -212,15 +212,17 @@ app.use(function(err, req, res, next) {
 });
 
 
+/*
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+*/
 
 
 //connect to the mongo collection session and then createServer
-/*mongo.connect(mongoSessionConnectURL, function(){
+mongo.connect(mongoSessionConnectURL, function(){
 	console.log('Connected to mongo at: ' + mongoSessionConnectURL);
 	http.createServer(app).listen(app.get('port'), function(){
 		console.log('Express server listening on port ' + app.get('port'));
 	});
-});*/
+});

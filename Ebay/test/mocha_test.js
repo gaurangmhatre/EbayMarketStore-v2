@@ -4,9 +4,8 @@ var request = require('request')
     ,http = require("http");
 
 
-describe('http tests', function(){
+describe('http tests  LAB2 : MongoDB and RabbitMQ', function(){
 
-/*
 
     it('should be able to login with correct details', function(done) {
         request.post(
@@ -19,7 +18,6 @@ describe('http tests', function(){
         );
     });
 
-*/
 
     it('Check Email Id exists', function(done) {
         request.post(
@@ -32,7 +30,7 @@ describe('http tests', function(){
         );
     });
 
-  /*  it('Check sign out', function(done) {
+    it('Check sign out', function(done) {
         request.post(
             'http://localhost:3000/signout',
             { form: { } },
@@ -58,14 +56,14 @@ describe('http tests', function(){
 
     it('Check get All products types', function(done) {
         request.post(
-            'http://localhost:3000/getItemType',
+            'http://localhost:3000/getAllProductsForAuction',
             { form: { } },
             function (error, response, body) {
                 assert.equal(200, response.statusCode);
                 done();
             }
         );
-    });*/
+    });
 
 });
 

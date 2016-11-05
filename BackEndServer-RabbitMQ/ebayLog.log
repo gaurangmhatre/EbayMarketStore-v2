@@ -631,3 +631,17 @@
 {"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-04T22:09:33.824Z"}
 {"level":"info","message":"---Successful got the products data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-04T22:09:35.163Z"}
 {"level":"info","message":"---Successful got the products for auction data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-04T22:09:35.164Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:46:10.099Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:46:27.552Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:46:38.616Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:46:58.822Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:47:29.128Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:49:40.472Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:49:50.757Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:51:36.701Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-05T01:51:43.734Z"}
+{"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-05T02:20:44.992Z"}
+{"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-05T02:24:04.561Z"}
+{"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-05T02:25:03.477Z"}
+{"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-05T02:25:23.254Z"}
+{"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-05T02:30:32.857Z"}

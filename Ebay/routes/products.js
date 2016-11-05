@@ -183,7 +183,7 @@ exports.addBidOnProduct = function(req,res){
 	}
 };
 
-exports.getItemType = function(req,res){
+/*exports.getItemType = function(req,res){
 	console.log("Inside getItemType Method.");
 	
 	var getItemTypeQuery = "SELECT ItemTypeId,ItemType FROM itemtype;";
@@ -212,7 +212,7 @@ exports.getItemType = function(req,res){
 		
 	}, getItemTypeQuery);
 	
-};
+};*/
 
 exports.addProduct = function(req,res){
 	console.log("Inside addProduct.");

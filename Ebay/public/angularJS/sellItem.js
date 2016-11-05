@@ -6,7 +6,7 @@ userProfile.controller('sellItemController', function($scope,$http) {
 	$scope.noProductadded = true;
 	$scope.noProductForAuctionAdded = true;
 	
-	$http({
+/*	$http({
 		method : "POST",
 		url : '/getItemType',
 		data : {
@@ -26,7 +26,7 @@ userProfile.controller('sellItemController', function($scope,$http) {
 		$scope.unexpected_error = false;
 		$scope.invalid_login = true;
 		$window.alert("unexpected_error");
-	});	
+	});	*/
 	
 	
 	
