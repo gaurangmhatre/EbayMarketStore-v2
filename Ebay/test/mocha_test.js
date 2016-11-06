@@ -41,6 +41,16 @@ describe('http tests  LAB2 : MongoDB and RabbitMQ', function(){
         );
     });
 
+    it('Check Email Id exists without RabbitMQ', function(done) {
+        request.post(
+            'http://localhost:3000/checksignupWithoutRabbitMQ',
+            { form: { email: 'gaurangmhatre@gmail.com' } },
+            function (error, response, body) {
+                assert.equal(200, response.statusCode);
+                done();
+            }
+        );
+    });
 
     it('Check sign out', function(done) {
         request.post(

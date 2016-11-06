@@ -74,6 +74,36 @@ exports.checksignup = function(req,res){ //check if email ID is valid or not
 	}
 };
 
+
+exports.checksignupWithoutRabbitMQ = function(req,res){ //check if email ID is valid or not
+	console.log("In check signup WithoutRabbitMQ.");
+
+	//request parameters
+	var email = req.param("email");
+
+	if(email!='') {
+		//check if email already exists
+
+		mongo.connect(mongoURL, function(){
+			console.log('Connected to mongo at: ' + mongoURL);
+			var coll = mongo.collection('login');
+			coll.findOne({EmailId: email}, function(err, user){
+				if (user) {
+					console.log("Email exists!");
+					logger.log('error', "Email exists for id: "+ email);
+					res.send({"statusCode" : 200});
+				} else {
+					console.log("Email Doesn't exists");
+					logger.log('info', "New mail for id: "+ email);
+					res.send({"statusCode" : 401});
+				}
+			});
+		});
+
+	}
+};
+
+
 exports.checksignupWithConnectionPool = function(req,res){ //check if email ID is valid or not
 	console.log("In check signup .");
 

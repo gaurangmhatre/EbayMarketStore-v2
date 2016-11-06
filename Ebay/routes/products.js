@@ -14,6 +14,13 @@ var logger = new (winston.Logger)({
 	]
 });
 
+var EventLogger = new (winston.Logger)({
+	transports: [
+		new (winston.transports.Console)(),
+		new (winston.transports.File)({ filename: 'ebayEventLog.log' })
+	]
+});
+
 exports.getProductsPage = function(req,res){
 		res.render('products',{validationMessage:'Empty Messgage'});
 };
@@ -304,4 +311,9 @@ exports.addProduct = function(req,res){
 			});
 		}
 	}
+};
+
+exports.labProducts = function(req,res){
+	console.log("Inside logger.");
+	EventLogger.log('info', req.session.userid +"userOver Product" +new Date());
 };

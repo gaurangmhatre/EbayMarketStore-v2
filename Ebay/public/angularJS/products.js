@@ -83,4 +83,22 @@ products.controller('products', function($scope, $filter, $http) {
 				$window.alert("unexpected_error");
 			});
 		}
+
+		$scope.Log= function(){
+			$http({
+				method : "POST",
+				url : '/labProducts',//change the method to get 10 items at a time.
+				data : {
+
+				}
+			}).success(function(data) {
+
+				//set all variables.
+
+			}).error(function(error) {
+				console.log("inside error");
+				
+			});
+
+		}
 });

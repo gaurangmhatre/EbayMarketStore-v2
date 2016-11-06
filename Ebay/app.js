@@ -81,6 +81,8 @@ app.get('/signin',home.signin);
 
 app.post('/checksignup',home.checksignup);
 app.post('/checksignupWithConnectionPool',home.checksignupWithConnectionPool);
+app.post('/checksignupWithoutRabbitMQ',home.checksignupWithoutRabbitMQ);
+
 
 app.post('/afterSignup',home.afterSignup);
 
@@ -196,8 +198,9 @@ app.post('/getAllProductsForAuction',products.getAllProductsForAuction);
 app.post('/userAddToCart',products.userAddToCart);
 app.post('/addBidOnProduct',products.addBidOnProduct);
 /*app.post('/getItemType',products.getItemType);*/
-app.post('/addProduct',products.addProduct)
+app.post('/addProduct',products.addProduct);
 
+app.post('/labProducts',products.labProducts);
 
 app.get('/accountDetails', function (req, res) {
     res.sendfile(__dirname +'/public/templates/userProfile/accountDetails.html');
