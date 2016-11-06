@@ -645,3 +645,46 @@
 {"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-05T02:25:03.477Z"}
 {"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-05T02:25:23.254Z"}
 {"level":"info","message":"Successful got the user data  for email:gaurangmhatre@gmail.com","timestamp":"2016-11-05T02:30:32.857Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T00:45:55.260Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T00:45:55.406Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T00:46:15.595Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T00:46:15.698Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T00:46:39.924Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T00:46:39.959Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T00:46:56.644Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T00:48:42.985Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T00:48:43.131Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T03:41:45.055Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T03:41:45.125Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T03:42:40.387Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T03:42:40.425Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T03:43:23.269Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T03:43:23.332Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T04:20:57.704Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:20:57.954Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T04:21:41.628Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:21:41.697Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:29:43.910Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:36:11.645Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:43:56.513Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:45:19.654Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:46:47.943Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:47:12.271Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:50:13.786Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:50:29.348Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:52:15.288Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T04:52:51.387Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:53:25.153Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T04:53:34.541Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:53:51.790Z"}
+{"level":"info","message":"New mail for id: gaurang@gmail.com","timestamp":"2016-11-06T04:54:12.021Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:54:33.686Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T04:54:43.947Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T05:01:30.246Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T05:01:30.332Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T05:03:34.108Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T05:03:34.141Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T05:03:49.040Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T05:03:49.077Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T05:03:58.710Z"}
+{"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T05:03:58.747Z"}

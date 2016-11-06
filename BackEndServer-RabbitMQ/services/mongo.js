@@ -3,6 +3,10 @@ var db;
 var connected = false;
 
 
+
+
+
+
 /**Connects to the MongoDB Database with the provided URL**/
 exports.connect = function(url, callback){
     MongoClient.connect(url, function(err, _db){

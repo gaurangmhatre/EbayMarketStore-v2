@@ -1,5 +1,7 @@
 var ObjectId = require('mongodb').ObjectId;
 var mongo = require('./mongo.js');
+var mongoWithConnectionPool = require('./mongoWithConnectionPool.js');
+
 var mongoURL = "mongodb://localhost:27017/ebay";
 var winston = require('winston');
 
@@ -24,6 +26,38 @@ function handle_checksignup_request(msg, callback){
         mongo.connect(mongoURL, function(){
             console.log('Connected to mongo at: ' + mongoURL);
             var coll = mongo.collection('users');
+            coll.findOne({EmailId: email}, function(err, user){
+                if (user) {
+                    console.log("Email exists!");
+                    logger.log('error', "Email exists for id: "+ email);
+                    res.statusCode= 200;
+
+                } else {
+                    console.log("Email Doesn't exists");
+                    logger.log('info', "New mail for id: "+ email);
+                    res.statusCode= 401; //email not found.
+                }
+
+                callback(null, res);
+            });
+        });
+
+    }
+}
+
+function handle_checksignup_request_WithConnectionPool(msg, callback){
+
+    var res = {};
+    console.log("In handle checksignup request:"+ msg.email);
+
+    var email = msg.email;
+
+    if(email!='') {
+        //check if email already exists
+
+        mongoWithConnectionPool.connect(mongoURL, function(){
+            console.log('Connected to mongo at: ' + mongoURL);
+            var coll = mongoWithConnectionPool.collection('users');
             coll.findOne({EmailId: email}, function(err, user){
                 if (user) {
                     console.log("Email exists!");
@@ -172,6 +206,7 @@ exports.handle_addLastLogin_request = handle_addLastLogin_request;
 exports.handle_getAllAuctionResults_request= handle_getAllAuctionResults_request;
 exports.handle_signin_request = handle_signin_request;
 exports.handle_checksignup_request = handle_checksignup_request;
+exports.handle_checksignup_request_WithConnectionPool = handle_checksignup_request_WithConnectionPool;
 exports.handle_aftersignup_request = handle_aftersignup_request;
 
 

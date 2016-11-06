@@ -74,6 +74,36 @@ exports.checksignup = function(req,res){ //check if email ID is valid or not
 	}
 };
 
+exports.checksignupWithConnectionPool = function(req,res){ //check if email ID is valid or not
+	console.log("In check signup .");
+
+	//request parameters
+	var email = req.param("email");
+	var msg_payload = {"email":email};
+
+	if(email!='') {
+		//check if email already exists
+		mq_client.make_request('checksignup_queue_WithConnectionPool',msg_payload, function(err,results){
+
+			console.log(results);
+			if(err){
+				throw err;
+			}
+			else
+			{
+				if(results.statusCode == 200){
+					console.log("valid Login");
+					res.send({"statusCode" : 200});
+				}
+				else {
+					console.log("Invalid Login");
+					res.send({"statusCode" : 401});
+				}
+			}
+		});
+	}
+};
+
 exports.afterSignup = function(req,res){// load new user data in database
 	console.log("In aftersignup");
 

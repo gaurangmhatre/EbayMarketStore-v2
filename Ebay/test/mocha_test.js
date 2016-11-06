@@ -10,7 +10,7 @@ describe('http tests  LAB2 : MongoDB and RabbitMQ', function(){
     it('should be able to login with correct details', function(done) {
         request.post(
             'http://localhost:3000/checklogin',
-            { form: { email: 'gaurang@gmail.com',password:'aabc' } },
+            { form: { email: 'gaurangmhatre@gmail.com',password:'aabc' } },
             function (error, response, body) {
                 assert.equal(200, response.statusCode);
                 done();
@@ -29,6 +29,18 @@ describe('http tests  LAB2 : MongoDB and RabbitMQ', function(){
             }
         );
     });
+
+    it('Check Email Id exists with connection Pool', function(done) {
+        request.post(
+            'http://localhost:3000/checksignupWithConnectionPool',
+            { form: { email: 'gaurangmhatre@gmail.com' } },
+            function (error, response, body) {
+                assert.equal(200, response.statusCode);
+                done();
+            }
+        );
+    });
+
 
     it('Check sign out', function(done) {
         request.post(

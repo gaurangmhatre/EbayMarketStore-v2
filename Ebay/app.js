@@ -80,6 +80,8 @@ app.get('/signup',home.signup);
 app.get('/signin',home.signin);
 
 app.post('/checksignup',home.checksignup);
+app.post('/checksignupWithConnectionPool',home.checksignupWithConnectionPool);
+
 app.post('/afterSignup',home.afterSignup);
 
 //app.post('/checklogin',home.checklogin);// change this method.
