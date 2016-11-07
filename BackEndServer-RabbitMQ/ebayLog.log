@@ -5055,3 +5055,89 @@
 {"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T19:20:12.689Z"}
 {"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T19:20:12.709Z"}
 {"level":"error","message":"Email exists for id: gaurangmhatre@gmail.com","timestamp":"2016-11-06T19:20:12.711Z"}
+{"level":"info","message":"New mail for id: tim@gmail.com","timestamp":"2016-11-06T23:12:32.916Z"}
+{"level":"info","message":"Valid Sign up for: tim@gmail.com","timestamp":"2016-11-06T23:12:34.259Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-06T23:15:55.662Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-06T23:16:16.880Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:36:54.347Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-06T23:36:54.364Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:37:01.028Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-06T23:37:01.034Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-06T23:42:37.616Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:46:31.376Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-06T23:46:31.384Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-06T23:49:11.792Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-06T23:49:11.881Z"}
+{"level":"info","message":"Successful got the user products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:49:17.014Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-06T23:49:17.017Z"}
+{"level":"info","message":"Successful got the user bidding products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:49:17.019Z"}
+{"level":"info","message":"Successful got the user Auctions products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:49:17.021Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:49:24.326Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-06T23:49:24.328Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-06T23:57:02.955Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:57:04.719Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-06T23:57:04.730Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-06T23:57:54.350Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-06T23:57:54.362Z"}
+{"level":"info","message":"Successful got the the products in cart for:tim@gmail.com","timestamp":"2016-11-06T23:59:13.820Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-06T23:59:13.941Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-06T23:59:14.085Z"}
+{"level":"info","message":"Successful got the user products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:59:14.149Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-06T23:59:14.159Z"}
+{"level":"info","message":"Successful got the user bidding products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:59:14.169Z"}
+{"level":"info","message":"Successful got the user Auctions products data  for email:tim@gmail.com","timestamp":"2016-11-06T23:59:14.219Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:02:44.543Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-07T00:02:44.550Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:04:13.333Z"}
+{"level":"info","message":"Successful got the user products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:04:14.831Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-07T00:04:14.833Z"}
+{"level":"info","message":"Successful got the user bidding products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:04:14.903Z"}
+{"level":"info","message":"Successful got the user Auctions products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:04:14.906Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:09:23.661Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:09:23.664Z"}
+{"level":"info","message":"Successful got the user products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:09:37.115Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-07T00:09:37.117Z"}
+{"level":"info","message":"Successful got the user bidding products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:09:37.118Z"}
+{"level":"info","message":"Successful got the user Auctions products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:09:37.122Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:10:32.111Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:10:35.137Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:10:35.153Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:10:38.824Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:10:38.841Z"}
+{"level":"info","message":"Successful got the user products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:03.280Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:03.290Z"}
+{"level":"info","message":"Successful got the user bidding products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:03.293Z"}
+{"level":"info","message":"Successful got the user Auctions products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:03.296Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:05.080Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:09.192Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:09.200Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:53.187Z"}
+{"level":"info","message":"Successful got the user products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:54.931Z"}
+{"level":"info","message":"Successful got the user bidding products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:54.933Z"}
+{"level":"info","message":"Successful got the user Auctions products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:54.938Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:54.944Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:59.991Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-07T00:23:59.993Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:24:59.194Z"}
+{"level":"info","message":"Successful got the user products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:25:01.284Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-07T00:25:01.291Z"}
+{"level":"info","message":"Successful got the user bidding products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:25:01.292Z"}
+{"level":"info","message":"Successful got the user Auctions products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:25:01.295Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:26:21.354Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:26:28.169Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:26:28.177Z"}
+{"level":"info","message":"Successful got the user products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:27:19.669Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-07T00:27:19.672Z"}
+{"level":"info","message":"Successful got the user bidding products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:27:19.674Z"}
+{"level":"info","message":"Successful got the user Auctions products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:27:19.675Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:32:00.446Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:32:00.459Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:36:36.293Z"}
+{"level":"info","message":"Successful got the user sold data  for email:tim@gmail.com","timestamp":"2016-11-07T00:36:36.306Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:36:39.487Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-07T00:36:39.494Z"}
+{"level":"info","message":"---Successful got the products data  for email:tim@gmail.com","timestamp":"2016-11-07T00:36:46.904Z"}
+{"level":"info","message":"---Successful got the products for auction data  for email:tim@gmail.com","timestamp":"2016-11-07T00:36:46.908Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:49:54.769Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:49:56.518Z"}
+{"level":"info","message":"Successful got the user data  for email:tim@gmail.com","timestamp":"2016-11-07T00:49:56.531Z"}

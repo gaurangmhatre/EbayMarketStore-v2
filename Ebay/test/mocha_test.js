@@ -17,8 +17,7 @@ describe('http tests  LAB2 : MongoDB and RabbitMQ', function(){
             }
         );
     });
-
-
+    
     it('Check Email Id exists', function(done) {
         request.post(
             'http://localhost:3000/checksignup',
@@ -63,7 +62,6 @@ describe('http tests  LAB2 : MongoDB and RabbitMQ', function(){
         );
     });
 
-
     it('Check get All products', function(done) {
         request.post(
             'http://localhost:3000/getAllProducts',
@@ -74,7 +72,6 @@ describe('http tests  LAB2 : MongoDB and RabbitMQ', function(){
             }
         );
     });
-
 
     it('Check get All products types', function(done) {
         request.post(
